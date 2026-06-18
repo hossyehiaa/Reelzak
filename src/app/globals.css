@@ -4,8 +4,8 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ==========================================================================
-   REELZAK — Cinematic Dark Theme
-   Palette: deep charcoal base + amber/gold primary + magenta/violet accent
+   REELZAK — Ultra-Premium Monochrome
+   Strict black & white. No hue. No saturation. Only luminance.
    ========================================================================== */
 
 @theme inline {
@@ -13,6 +13,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
   --font-display: var(--font-space-grotesk);
+  --font-serif: var(--font-instrument-serif);
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -49,77 +50,80 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* Light theme (kept for completeness; app defaults to dark) */
+/* ---------------------------------------------------------------------------
+   LIGHT THEME (kept for completeness — app forces dark by default)
+   --------------------------------------------------------------------------- */
 :root {
-  --radius: 0.75rem;
-  --background: oklch(0.98 0.005 280);
-  --foreground: oklch(0.15 0.005 280);
+  --radius: 0.5rem;
+  --background: oklch(0.98 0 0);
+  --foreground: oklch(0.05 0 0);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.15 0.005 280);
+  --card-foreground: oklch(0.05 0 0);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0.005 280);
-  --primary: oklch(0.78 0.18 75);
-  --primary-foreground: oklch(0.13 0.005 280);
-  --secondary: oklch(0.96 0.005 280);
-  --secondary-foreground: oklch(0.20 0.005 280);
-  --muted: oklch(0.96 0.005 280);
-  --muted-foreground: oklch(0.55 0.005 280);
-  --accent: oklch(0.65 0.24 320);
-  --accent-foreground: oklch(0.98 0 0);
-  --destructive: oklch(0.58 0.24 25);
-  --border: oklch(0.90 0.005 280);
-  --input: oklch(0.90 0.005 280);
-  --ring: oklch(0.78 0.18 75);
-  --chart-1: oklch(0.78 0.18 75);
-  --chart-2: oklch(0.65 0.24 320);
-  --chart-3: oklch(0.70 0.18 160);
-  --chart-4: oklch(0.65 0.22 25);
-  --chart-5: oklch(0.78 0.16 200);
-  --sidebar: oklch(0.97 0.005 280);
-  --sidebar-foreground: oklch(0.15 0.005 280);
-  --sidebar-primary: oklch(0.78 0.18 75);
-  --sidebar-primary-foreground: oklch(0.13 0.005 280);
-  --sidebar-accent: oklch(0.96 0.005 280);
-  --sidebar-accent-foreground: oklch(0.20 0.005 280);
-  --sidebar-border: oklch(0.90 0.005 280);
-  --sidebar-ring: oklch(0.78 0.18 75);
+  --popover-foreground: oklch(0.05 0 0);
+  --primary: oklch(0.05 0 0);
+  --primary-foreground: oklch(0.98 0 0);
+  --secondary: oklch(0.94 0 0);
+  --secondary-foreground: oklch(0.10 0 0);
+  --muted: oklch(0.94 0 0);
+  --muted-foreground: oklch(0.45 0 0);
+  --accent: oklch(0.90 0 0);
+  --accent-foreground: oklch(0.10 0 0);
+  --destructive: oklch(0.45 0.02 25);
+  --border: oklch(0.88 0 0);
+  --input: oklch(0.90 0 0);
+  --ring: oklch(0.20 0 0);
+  --chart-1: oklch(0.20 0 0);
+  --chart-2: oklch(0.40 0 0);
+  --chart-3: oklch(0.60 0 0);
+  --chart-4: oklch(0.75 0 0);
+  --chart-5: oklch(0.90 0 0);
+  --sidebar: oklch(0.97 0 0);
+  --sidebar-foreground: oklch(0.05 0 0);
+  --sidebar-primary: oklch(0.05 0 0);
+  --sidebar-primary-foreground: oklch(0.98 0 0);
+  --sidebar-accent: oklch(0.94 0 0);
+  --sidebar-accent-foreground: oklch(0.10 0 0);
+  --sidebar-border: oklch(0.88 0 0);
+  --sidebar-ring: oklch(0.20 0 0);
 }
 
 /* ==========================================================================
-   DARK MODE (default for Reelzak)
+   DARK MODE — the only mode Reelzak ships in
+   Pure luminance scale. 0 = pure black. 1 = pure white.
    ========================================================================== */
 .dark {
-  --background: oklch(0.13 0.006 280);
-  --foreground: oklch(0.97 0.005 280);
-  --card: oklch(0.17 0.008 280);
-  --card-foreground: oklch(0.97 0.005 280);
-  --popover: oklch(0.17 0.008 280);
-  --popover-foreground: oklch(0.97 0.005 280);
-  --primary: oklch(0.83 0.16 75);
-  --primary-foreground: oklch(0.13 0.006 280);
-  --secondary: oklch(0.22 0.008 280);
-  --secondary-foreground: oklch(0.97 0.005 280);
-  --muted: oklch(0.22 0.008 280);
-  --muted-foreground: oklch(0.65 0.02 280);
-  --accent: oklch(0.68 0.24 320);
-  --accent-foreground: oklch(0.98 0 0);
-  --destructive: oklch(0.65 0.24 25);
-  --border: oklch(1 0 0 / 8%);
-  --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.83 0.16 75);
-  --chart-1: oklch(0.83 0.16 75);
-  --chart-2: oklch(0.68 0.24 320);
-  --chart-3: oklch(0.72 0.18 160);
-  --chart-4: oklch(0.70 0.22 25);
-  --chart-5: oklch(0.78 0.16 200);
-  --sidebar: oklch(0.15 0.006 280);
-  --sidebar-foreground: oklch(0.97 0.005 280);
-  --sidebar-primary: oklch(0.83 0.16 75);
-  --sidebar-primary-foreground: oklch(0.13 0.006 280);
-  --sidebar-accent: oklch(0.22 0.008 280);
-  --sidebar-accent-foreground: oklch(0.97 0.005 280);
+  --background: oklch(0.055 0 0);          /* near-black canvas */
+  --foreground: oklch(0.97 0 0);            /* near-white text */
+  --card: oklch(0.09 0 0);                  /* one step up from bg */
+  --card-foreground: oklch(0.97 0 0);
+  --popover: oklch(0.08 0 0);
+  --popover-foreground: oklch(0.97 0 0);
+  --primary: oklch(0.98 0 0);               /* pure white primary */
+  --primary-foreground: oklch(0.05 0 0);    /* dark text on white */
+  --secondary: oklch(0.13 0 0);
+  --secondary-foreground: oklch(0.97 0 0);
+  --muted: oklch(0.13 0 0);
+  --muted-foreground: oklch(0.58 0 0);      /* mid-gray for body copy */
+  --accent: oklch(0.18 0 0);
+  --accent-foreground: oklch(0.97 0 0);
+  --destructive: oklch(0.55 0.03 25);       /* muted clay — semantic only */
+  --border: oklch(1 0 0 / 8%);              /* white at 8% opacity */
+  --input: oklch(1 0 0 / 10%);
+  --ring: oklch(1 0 0 / 60%);               /* focus ring = white */
+  --chart-1: oklch(0.97 0 0);
+  --chart-2: oklch(0.70 0 0);
+  --chart-3: oklch(0.50 0 0);
+  --chart-4: oklch(0.30 0 0);
+  --chart-5: oklch(0.15 0 0);
+  --sidebar: oklch(0.07 0 0);
+  --sidebar-foreground: oklch(0.97 0 0);
+  --sidebar-primary: oklch(0.98 0 0);
+  --sidebar-primary-foreground: oklch(0.05 0 0);
+  --sidebar-accent: oklch(0.13 0 0);
+  --sidebar-accent-foreground: oklch(0.97 0 0);
   --sidebar-border: oklch(1 0 0 / 8%);
-  --sidebar-ring: oklch(0.83 0.16 75);
+  --sidebar-ring: oklch(1 0 0 / 60%);
 }
 
 @layer base {
@@ -128,78 +132,165 @@
   }
   html {
     scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
   body {
     @apply bg-background text-foreground antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;
+    font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1, "ss02" 1;
+    letter-spacing: -0.011em;
   }
-  /* Cinematic gradient backdrop — fixed to viewport */
+  ::selection {
+    background: oklch(1 0 0 / 90%);
+    color: oklch(0.05 0 0);
+  }
+
+  /* Subtle radial vignette — pushes the eye toward content center */
   .reelzak-bg {
     background-color: var(--background);
     background-image:
-      radial-gradient(ellipse 80% 50% at 50% -10%, oklch(0.83 0.16 75 / 0.18), transparent 60%),
-      radial-gradient(ellipse 60% 50% at 100% 100%, oklch(0.68 0.24 320 / 0.12), transparent 60%),
-      radial-gradient(ellipse 50% 40% at 0% 80%, oklch(0.83 0.16 75 / 0.06), transparent 60%);
+      radial-gradient(ellipse 90% 60% at 50% -10%, oklch(1 0 0 / 0.06), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 100% 100%, oklch(1 0 0 / 0.03), transparent 60%);
   }
-  /* Subtle film grain noise overlay */
+  /* Fine film grain noise — barely perceptible */
   .reelzak-grain::before {
     content: "";
     position: fixed;
     inset: 0;
     z-index: 1;
     pointer-events: none;
-    opacity: 0.04;
+    opacity: 0.035;
     mix-blend-mode: overlay;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
+  /* Faint architectural grid — the avant-garde blueprint feel */
+  .reelzak-grid::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(to right, oklch(1 0 0 / 0.025) 1px, transparent 1px),
+      linear-gradient(to bottom, oklch(1 0 0 / 0.025) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  }
 }
 
-/* Custom scrollbar — cinematic */
+/* ==========================================================================
+   GLASS — grayscale glassmorphism
+   ========================================================================== */
 @layer utilities {
-  .scrollbar-reelzak::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+  .glass {
+    background-color: oklch(1 0 0 / 0.025);
+    backdrop-filter: blur(20px) saturate(100%);
+    -webkit-backdrop-filter: blur(20px) saturate(100%);
+    border: 1px solid oklch(1 0 0 / 0.08);
   }
-  .scrollbar-reelzak::-webkit-scrollbar-track {
-    background: transparent;
+  .glass-strong {
+    background-color: oklch(1 0 0 / 0.05);
+    backdrop-filter: blur(28px) saturate(100%);
+    -webkit-backdrop-filter: blur(28px) saturate(100%);
+    border: 1px solid oklch(1 0 0 / 0.12);
   }
+  .glass-card {
+    background-color: oklch(1 0 0 / 0.02);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid oklch(1 0 0 / 0.06);
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .glass-card:hover {
+    background-color: oklch(1 0 0 / 0.04);
+    border-color: oklch(1 0 0 / 0.15);
+    transform: translateY(-2px);
+  }
+
+  /* Editorial typography */
+  .text-display {
+    font-family: var(--font-space-grotesk), var(--font-inter), sans-serif;
+    letter-spacing: -0.04em;
+    font-weight: 500;
+  }
+  .text-serif-italic {
+    font-family: var(--font-instrument-serif), Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+  .text-mono-label {
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* Grayscale text gradients */
+  .text-gradient-platinum {
+    background: linear-gradient(180deg, oklch(1 0 0 / 0.98) 0%, oklch(0.65 0 0) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .text-gradient-ghost {
+    background: linear-gradient(180deg, oklch(0.85 0 0) 0%, oklch(0.40 0 0) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Subtle white glow — only for primary CTAs */
+  .glow-white-soft {
+    box-shadow:
+      0 0 0 1px oklch(1 0 0 / 0.10),
+      0 12px 40px -12px oklch(1 0 0 / 0.25),
+      0 0 80px -20px oklch(1 0 0 / 0.15);
+  }
+  .glow-white-soft:hover {
+    box-shadow:
+      0 0 0 1px oklch(1 0 0 / 0.20),
+      0 16px 50px -12px oklch(1 0 0 / 0.40),
+      0 0 100px -20px oklch(1 0 0 / 0.25);
+  }
+
+  /* Hairline divider — 1px white at 8% */
+  .hairline {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, oklch(1 0 0 / 0.10) 20%, oklch(1 0 0 / 0.10) 80%, transparent);
+  }
+  .hairline-v {
+    width: 1px;
+    background: linear-gradient(180deg, transparent, oklch(1 0 0 / 0.10) 20%, oklch(1 0 0 / 0.10) 80%, transparent);
+  }
+
+  /* Custom scrollbar — monochrome */
+  .scrollbar-reelzak::-webkit-scrollbar { width: 6px; height: 6px; }
+  .scrollbar-reelzak::-webkit-scrollbar-track { background: transparent; }
   .scrollbar-reelzak::-webkit-scrollbar-thumb {
-    background: oklch(0.83 0.16 75 / 0.3);
+    background: oklch(1 0 0 / 0.12);
     border-radius: 9999px;
   }
   .scrollbar-reelzak::-webkit-scrollbar-thumb:hover {
-    background: oklch(0.83 0.16 75 / 0.5);
+    background: oklch(1 0 0 / 0.22);
   }
-  .text-gradient-gold {
-    background: linear-gradient(135deg, oklch(0.95 0.12 75) 0%, oklch(0.83 0.18 75) 50%, oklch(0.78 0.20 60) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+
+  /* Marquee */
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 40s linear infinite;
   }
-  .text-gradient-accent {
-    background: linear-gradient(135deg, oklch(0.83 0.18 75) 0%, oklch(0.68 0.24 320) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
   }
-  .border-gradient-gold {
-    border: 1px solid transparent;
-    background-image:
-      linear-gradient(var(--card), var(--card)),
-      linear-gradient(135deg, oklch(0.83 0.18 75 / 0.6), oklch(0.68 0.24 320 / 0.4));
-    background-origin: border-box;
-    background-clip: padding-box, border-box;
+
+  /* Slow pulse for status dots */
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.15); }
   }
-  .glow-gold {
-    box-shadow:
-      0 0 0 1px oklch(0.83 0.16 75 / 0.25),
-      0 8px 32px -8px oklch(0.83 0.16 75 / 0.4),
-      0 0 80px -20px oklch(0.83 0.16 75 / 0.3);
-  }
-  .glow-accent {
-    box-shadow:
-      0 0 0 1px oklch(0.68 0.24 320 / 0.25),
-      0 8px 32px -8px oklch(0.68 0.24 320 / 0.4),
-      0 0 80px -20px oklch(0.68 0.24 320 / 0.3);
-  }
+  .pulse-soft { animation: pulse-soft 2.4s ease-in-out infinite; }
 }

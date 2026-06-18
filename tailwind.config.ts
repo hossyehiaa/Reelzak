@@ -56,6 +56,7 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
         display: ["var(--font-space-grotesk)", "var(--font-inter)", "sans-serif"],
+        serif: ["var(--font-instrument-serif)", "Georgia", "serif"],
         mono: ["var(--font-geist-mono)", "ui-monospace", "monospace"],
       },
       borderRadius: {
@@ -63,9 +64,14 @@ const config: Config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      letterSpacing: {
+        tightest: "-0.05em",
+        tighter: "-0.04em",
+        widest: "0.3em",
+      },
       keyframes: {
         "fade-up": {
-          "0%": { opacity: "0", transform: "translateY(20px)" },
+          "0%": { opacity: "0", transform: "translateY(24px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
         "fade-in": {
@@ -73,28 +79,23 @@ const config: Config = {
           "100%": { opacity: "1" },
         },
         "scale-in": {
-          "0%": { opacity: "0", transform: "scale(0.95)" },
+          "0%": { opacity: "0", transform: "scale(0.96)" },
           "100%": { opacity: "1", transform: "scale(1)" },
         },
-        shimmer: {
-          "0%": { backgroundPosition: "-200% 0" },
-          "100%": { backgroundPosition: "200% 0" },
-        },
-        "pulse-glow": {
-          "0%, 100%": { opacity: "0.6" },
-          "50%": { opacity: "1" },
+        "blur-in": {
+          "0%": { opacity: "0", filter: "blur(8px)" },
+          "100%": { opacity: "1", filter: "blur(0)" },
         },
         float: {
           "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-10px)" },
+          "50%": { transform: "translateY(-8px)" },
         },
       },
       animation: {
-        "fade-up": "fade-up 0.6s ease-out forwards",
-        "fade-in": "fade-in 0.4s ease-out forwards",
-        "scale-in": "scale-in 0.3s ease-out forwards",
-        shimmer: "shimmer 2s linear infinite",
-        "pulse-glow": "pulse-glow 3s ease-in-out infinite",
+        "fade-up": "fade-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards",
+        "fade-in": "fade-in 0.6s ease-out forwards",
+        "scale-in": "scale-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards",
+        "blur-in": "blur-in 1s ease-out forwards",
         float: "float 6s ease-in-out infinite",
       },
     },

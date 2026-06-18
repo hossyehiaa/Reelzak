@@ -1,11 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <defs>
-    <linearGradient id="rz-mark-gold" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#F5C04A"/>
-      <stop offset="100%" stop-color="#E07B39"/>
-    </linearGradient>
-  </defs>
-  <rect x="0" y="0" width="64" height="64" rx="14" fill="url(#rz-mark-gold)" opacity="0.12"/>
-  <rect x="2" y="2" width="60" height="60" rx="12" stroke="url(#rz-mark-gold)" stroke-width="1.5" opacity="0.4"/>
-  <path d="M16 16 L16 48 L28 48 L28 36 L36 36 L44 48 L56 48 L45 33 C49 31 51 27 51 22 C51 17 47 16 40 16 L16 16 Z M28 26 L40 26 C43 26 44 27 44 29 C44 31 43 32 40 32 L28 32 L28 26 Z" fill="url(#rz-mark-gold)"/>
+  <!-- Reelzak mark — pure monochrome -->
+  <rect x="0" y="0" width="64" height="64" rx="14" fill="#ffffff" opacity="0.05"/>
+  <rect x="0.75" y="0.75" width="62.5" height="62.5" rx="13.25" stroke="#ffffff" stroke-width="1.5" opacity="0.18"/>
+  <path d="M16 16 L16 48 L28 48 L28 36 L36 36 L44 48 L56 48 L45 33 C49 31 51 27 51 22 C51 17 47 16 40 16 L16 16 Z M28 26 L40 26 C43 26 44 27 44 29 C44 31 43 32 40 32 L28 32 L28 26 Z" fill="#ffffff"/>
 </svg>

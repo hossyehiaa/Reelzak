@@ -66,36 +66,42 @@ export interface Package {
 
 export const ORDER_STATUS_META: Record<
   OrderStatus,
-  { label: string; color: string; description: string }
+  { label: string; color: string; dot: string; description: string }
 > = {
   PENDING: {
     label: "Pending",
-    color: "bg-amber-500/15 text-amber-300 border-amber-500/30",
+    color: "bg-white/5 text-white/70 border-white/10",
+    dot: "bg-white/40",
     description: "Brief submitted — our team is reviewing it.",
   },
   IDEATION: {
     label: "Ideation",
-    color: "bg-violet-500/15 text-violet-300 border-violet-500/30",
+    color: "bg-white/[0.07] text-white/80 border-white/15",
+    dot: "bg-white/55",
     description: "Our creative team is crafting concept directions.",
   },
   AI_GENERATION: {
     label: "AI Generation",
-    color: "bg-fuchsia-500/15 text-fuchsia-300 border-fuchsia-500/30",
+    color: "bg-white/[0.09] text-white/85 border-white/20",
+    dot: "bg-white/70",
     description: "Generating visual assets with our AI pipeline.",
   },
   EDITING: {
     label: "Editing",
-    color: "bg-sky-500/15 text-sky-300 border-sky-500/30",
+    color: "bg-white/[0.11] text-white/90 border-white/25",
+    dot: "bg-white/80",
     description: "Assembling, color-grading, and sound-designing your reel.",
   },
   READY_FOR_REVIEW: {
     label: "Ready for Review",
-    color: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
+    color: "bg-white/[0.13] text-white border-white/30",
+    dot: "bg-white/90",
     description: "First cut delivered — review and share feedback.",
   },
   DELIVERED: {
     label: "Delivered",
-    color: "bg-green-500/15 text-green-300 border-green-500/30",
+    color: "bg-white text-black border-white",
+    dot: "bg-white",
     description: "Final reel delivered. Ready to download.",
   },
 };

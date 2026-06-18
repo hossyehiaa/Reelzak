@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Space_Grotesk, Geist_Mono } from "next/font/google";
+import { Inter, Space_Grotesk, Instrument_Serif, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
@@ -16,6 +16,14 @@ const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   display: "swap",
   weight: ["400", "500", "600", "700"],
+});
+
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument-serif",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400"],
+  style: ["normal", "italic"],
 });
 
 const geistMono = Geist_Mono({
@@ -61,7 +69,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className="dark">
       <body
-        className={`${inter.variable} ${spaceGrotesk.variable} ${geistMono.variable} font-sans antialiased reelzak-bg reelzak-grain min-h-screen`}
+        className={`${inter.variable} ${spaceGrotesk.variable} ${instrumentSerif.variable} ${geistMono.variable} font-sans antialiased reelzak-bg reelzak-grain reelzak-grid min-h-screen`}
       >
         <ThemeProvider>
           <div className="relative z-10 flex min-h-screen flex-col">
@@ -73,9 +81,9 @@ export default function RootLayout({
             theme="dark"
             toastOptions={{
               style: {
-                background: "oklch(0.17 0.008 280)",
-                border: "1px solid oklch(1 0 0 / 8%)",
-                color: "oklch(0.97 0.005 280)",
+                background: "oklch(0.10 0 0)",
+                border: "1px solid oklch(1 0 0 / 12%)",
+                color: "oklch(0.97 0 0)",
               },
             }}
           />
