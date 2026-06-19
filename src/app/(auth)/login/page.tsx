@@ -11,10 +11,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n";
 
 export default function LoginPage() {
   return (
-    <React.Suspense fallback={<AuthShell eyebrow="(Members) — Sign in"><div /></AuthShell>}>
+    <React.Suspense fallback={<AuthShell eyebrow="(Members)"><div /></AuthShell>}>
       <LoginForm />
     </React.Suspense>
   );
@@ -22,6 +23,7 @@ export default function LoginPage() {
 
 function LoginForm() {
   const router = useRouter();
+  const { t } = useI18n();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
   const errorParam = searchParams.get("error");
@@ -30,7 +32,7 @@ function LoginForm() {
   const [password, setPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(
-    errorParam ? "Invalid email or password." : null,
+    errorParam ? t.auth.errorInvalid : null,
   );
 
   async function onSubmit(e: React.FormEvent) {
@@ -45,18 +47,18 @@ function LoginForm() {
     });
 
     if (res?.error) {
-      setError("Invalid email or password.");
+      setError(t.auth.errorInvalid);
       setLoading(false);
       return;
     }
 
     if (!res?.ok) {
-      setError("Something went wrong. Please try again.");
+      setError(t.auth.errorGeneric);
       setLoading(false);
       return;
     }
 
-    toast.success("Welcome back.");
+    toast.success(t.dashboard.welcome);
 
     // Fetch the session to determine role, then redirect accordingly.
     try {
@@ -72,22 +74,21 @@ function LoginForm() {
   }
 
   return (
-    <AuthShell eyebrow="(Members) — Sign in">
+    <AuthShell eyebrow={t.auth.membersEyebrow}>
       <div className="space-y-8">
         {/* Header */}
         <div>
           <h2 className="text-display text-3xl md:text-4xl font-medium tracking-tight">
-            Welcome back.
+            {t.auth.loginTitle}
           </h2>
           <p className="mt-3 text-sm text-white/50 leading-relaxed">
-            Sign in to your client portal to submit briefs, track orders, and
-            download finished reels.
+            {t.auth.loginBody}
           </p>
         </div>
 
         {/* Demo creds hint */}
         <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4">
-          <p className="text-mono-label text-white/40 mb-2">Demo accounts</p>
+          <p className="text-mono-label text-white/40 mb-2">{t.auth.demoAccounts}</p>
           <div className="grid grid-cols-1 gap-2 text-xs text-white/60 font-mono">
             <button
               type="button"
@@ -118,7 +119,7 @@ function LoginForm() {
         <form onSubmit={onSubmit} className="space-y-5">
           <div className="space-y-2">
             <Label htmlFor="email" className="text-mono-label text-white/50">
-              Email
+              {t.auth.email}
             </Label>
             <Input
               id="email"
@@ -135,13 +136,13 @@ function LoginForm() {
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="password" className="text-mono-label text-white/50">
-                Password
+                {t.auth.password}
               </Label>
               <Link
                 href="#"
                 className="text-xs text-white/40 hover:text-white/70 transition-colors"
               >
-                Forgot?
+                {t.auth.forgot}
               </Link>
             </div>
             <Input
@@ -177,12 +178,12 @@ function LoginForm() {
             {loading ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Signing in…
+                {t.auth.signingIn}
               </>
             ) : (
               <>
-                Sign in
-                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+                {t.auth.signIn}
+                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 rtl-flip" />
               </>
             )}
           </Button>
@@ -190,12 +191,12 @@ function LoginForm() {
 
         {/* Footer */}
         <p className="text-center text-sm text-white/50">
-          New to CGLAB?{" "}
+          {t.auth.newToCGLAB}{" "}
           <Link
             href="/signup"
             className="text-white underline underline-offset-4 hover:text-white"
           >
-            Start your project
+            {t.auth.startProject}
           </Link>
           .
         </p>

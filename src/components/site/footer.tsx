@@ -5,37 +5,40 @@ import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { BRAND } from "@/lib/brand";
 import { Logo } from "@/components/site/logo";
-
-const COLS = [
-  {
-    title: "Product",
-    links: [
-      { label: "Process", href: "#process" },
-      { label: "Pricing", href: "#pricing" },
-      { label: "Showreel", href: "#showreel" },
-      { label: "FAQ", href: "#faq" },
-    ],
-  },
-  {
-    title: "Account",
-    links: [
-      { label: "Sign in", href: "/login" },
-      { label: "Start a project", href: "/signup" },
-      { label: "Client portal", href: "/dashboard" },
-    ],
-  },
-  {
-    title: "Studio",
-    links: [
-      { label: "hello@cglab.studio", href: "mailto:hello@cglab.studio" },
-      { label: "Twitter / X", href: BRAND.social.twitter, external: true },
-      { label: "Instagram", href: BRAND.social.instagram, external: true },
-      { label: "YouTube", href: BRAND.social.youtube, external: true },
-    ],
-  },
-];
+import { useI18n } from "@/lib/i18n";
 
 export function Footer() {
+  const { t } = useI18n();
+
+  const COLS = [
+    {
+      title: t.footer.colProduct,
+      links: [
+        { label: t.nav.process, href: "#process" },
+        { label: t.nav.pricing, href: "#pricing" },
+        { label: t.hero.ctaSecondary, href: "#showreel" },
+        { label: t.nav.faq, href: "#faq" },
+      ],
+    },
+    {
+      title: t.footer.colAccount,
+      links: [
+        { label: t.nav.signIn, href: "/login" },
+        { label: t.nav.startProject, href: "/signup" },
+        { label: t.footer.clientPortal, href: "/dashboard" },
+      ],
+    },
+    {
+      title: t.footer.colStudio,
+      links: [
+        { label: "hello@cglab.studio", href: "mailto:hello@cglab.studio" },
+        { label: "Twitter / X", href: BRAND.social.twitter, external: true },
+        { label: "Instagram", href: BRAND.social.instagram, external: true },
+        { label: "YouTube", href: BRAND.social.youtube, external: true },
+      ],
+    },
+  ];
+
   return (
     <footer className="relative mt-auto border-t border-white/[0.08]">
       {/* CTA band */}
@@ -49,13 +52,13 @@ export function Footer() {
         >
           <div>
             <p className="text-mono-label text-white/40 mb-4">
-              Ready when you are
+              {t.footer.readyLabel}
             </p>
             <h3 className="text-display text-4xl sm:text-5xl md:text-6xl leading-[1.05] tracking-tight font-medium max-w-2xl">
-              Let's make your
+              {t.footer.title1}
               <br />
               <span className="text-serif-italic text-white/55">
-                next reel.
+                {t.footer.title2}
               </span>
             </h3>
           </div>
@@ -63,8 +66,8 @@ export function Footer() {
             href="/signup"
             className="group inline-flex items-center gap-2 px-7 py-4 text-base font-medium rounded-full bg-white text-black hover:bg-white/90 transition-all duration-300 glow-white-soft"
           >
-            Start Your Project
-            <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            {t.footer.cta}
+            <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 rtl-flip" />
           </Link>
         </motion.div>
       </div>
@@ -80,8 +83,7 @@ export function Footer() {
               <Logo height={36} dim />
             </div>
             <p className="text-sm text-white/45 leading-relaxed max-w-xs">
-              {BRAND.tagline} A productized AI media agency for brands who
-              refuse to look like everyone else.
+              {t.footer.tagline}
             </p>
           </div>
 
@@ -111,15 +113,14 @@ export function Footer() {
         <div className="hairline mt-16 mb-6" />
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/40">
           <p>
-            © {new Date().getFullYear()} {BRAND.name} Studio. All rights
-            reserved.
+            © {new Date().getFullYear()} {BRAND.name} Studio. {t.footer.rights}
           </p>
           <div className="flex items-center gap-6">
             <Link href="#" className="hover:text-white/70 transition-colors">
-              Privacy
+              {t.footer.privacy}
             </Link>
             <Link href="#" className="hover:text-white/70 transition-colors">
-              Terms
+              {t.footer.terms}
             </Link>
             <span className="font-mono">v.01 / 2026</span>
           </div>

@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { SessionProvider } from "@/components/providers/session-provider";
+import { I18nProvider } from "@/lib/i18n";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -74,21 +75,23 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <SessionProvider>
-            <div className="relative z-10 flex min-h-screen flex-col">
-              {children}
-            </div>
-            <Toaster />
-            <SonnerToaster
-              position="bottom-right"
-              theme="dark"
-              toastOptions={{
-                style: {
-                  background: "oklch(0.10 0 0)",
-                  border: "1px solid oklch(1 0 0 / 12%)",
-                  color: "oklch(0.97 0 0)",
-                },
-              }}
-            />
+            <I18nProvider>
+              <div className="relative z-10 flex min-h-screen flex-col">
+                {children}
+              </div>
+              <Toaster />
+              <SonnerToaster
+                position="bottom-right"
+                theme="dark"
+                toastOptions={{
+                  style: {
+                    background: "oklch(0.10 0 0)",
+                    border: "1px solid oklch(1 0 0 / 12%)",
+                    color: "oklch(0.97 0 0)",
+                  },
+                }}
+              />
+            </I18nProvider>
           </SessionProvider>
         </ThemeProvider>
       </body>

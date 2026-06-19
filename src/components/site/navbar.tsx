@@ -3,20 +3,21 @@
 import * as React from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
-import { BRAND } from "@/lib/brand";
 import { Logo } from "@/components/site/logo";
-
-const NAV_LINKS = [
-  { label: "Process", href: "#process" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "FAQ", href: "#faq" },
-];
+import { LanguageToggle } from "@/components/site/language-toggle";
+import { useI18n } from "@/lib/i18n";
 
 export function Navbar() {
+  const { t } = useI18n();
   const [open, setOpen] = React.useState(false);
   const [scrolled, setScrolled] = React.useState(false);
+
+  const NAV_LINKS = [
+    { label: t.nav.process, href: "#process" },
+    { label: t.nav.pricing, href: "#pricing" },
+    { label: t.nav.faq, href: "#faq" },
+  ];
 
   React.useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -52,33 +53,37 @@ export function Navbar() {
           ))}
         </nav>
 
-        {/* Right cluster */}
-        <div className="hidden md:flex items-center gap-3">
+        {/* Right cluster — language toggle + auth */}
+        <div className="hidden md:flex items-center gap-4">
+          <LanguageToggle />
           <Link
             href="/login"
             className="px-4 py-2 text-sm text-white/70 hover:text-white transition-colors"
           >
-            Sign in
+            {t.nav.signIn}
           </Link>
           <Link
             href="/signup"
             className="group relative inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-full bg-white text-black hover:bg-white/90 transition-all duration-300"
           >
-            Start Your Project
-            <span className="inline-block transition-transform duration-300 group-hover:translate-x-0.5">
+            {t.nav.startProject}
+            <span className="inline-block transition-transform duration-300 group-hover:translate-x-0.5 rtl-flip">
               →
             </span>
           </Link>
         </div>
 
         {/* Mobile toggle */}
-        <button
-          onClick={() => setOpen((v) => !v)}
-          className="md:hidden h-10 w-10 flex items-center justify-center rounded-md hover:bg-white/[0.06] transition-colors"
-          aria-label="Toggle menu"
-        >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+        <div className="md:hidden flex items-center gap-2">
+          <LanguageToggle />
+          <button
+            onClick={() => setOpen((v) => !v)}
+            className="h-10 w-10 flex items-center justify-center rounded-md hover:bg-white/[0.06] transition-colors"
+            aria-label="Toggle menu"
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile menu */}
@@ -108,14 +113,14 @@ export function Navbar() {
                   onClick={() => setOpen(false)}
                   className="py-3 text-center text-sm text-white/80 border border-white/10 rounded-full"
                 >
-                  Sign in
+                  {t.nav.signIn}
                 </Link>
                 <Link
                   href="/signup"
                   onClick={() => setOpen(false)}
                   className="py-3 text-center text-sm font-medium bg-white text-black rounded-full"
                 >
-                  Start Your Project
+                  {t.nav.startProject}
                 </Link>
               </div>
             </div>

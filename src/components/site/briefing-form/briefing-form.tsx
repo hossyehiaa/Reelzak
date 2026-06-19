@@ -14,6 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { StepIndicator } from "./step-indicator";
 import { BRIEF_OBJECTIVES, BRIEF_STYLES } from "@/lib/orders";
 import { PRICING_PACKAGES, BRAND } from "@/lib/brand";
+import { useI18n } from "@/lib/i18n";
 import { format } from "date-fns";
 
 // ---------------------------------------------------------------------------
@@ -50,15 +51,16 @@ const INITIAL: BriefState = {
   paymentReceiptName: "",
 };
 
-const STEPS = [
-  { num: 1, label: "Brand" },
-  { num: 2, label: "Objective" },
-  { num: 3, label: "Style" },
-  { num: 4, label: "Message" },
-  { num: 5, label: "References" },
-  { num: 6, label: "Schedule" },
-  { num: 7, label: "Payment" },
-];
+// Step labels are now built inside the component from the translation dictionary.
+const STEP_KEYS = [
+  { num: 1, key: "brand" },
+  { num: 2, key: "objective" },
+  { num: 3, key: "style" },
+  { num: 4, key: "message" },
+  { num: 5, key: "references" },
+  { num: 6, key: "schedule" },
+  { num: 7, key: "payment" },
+] as const;
 
 // ---------------------------------------------------------------------------
 // Per-step validation
@@ -92,6 +94,17 @@ function stepValid(step: number, s: BriefState): boolean {
 // ---------------------------------------------------------------------------
 export function BriefingForm() {
   const router = useRouter();
+  const { t } = useI18n();
+  // Build the steps array from the translation dictionary
+  const STEPS = [
+    { num: 1, label: t.briefing.step1Title.split(" ")[0] }, // "Brand" / "العلامة"
+    { num: 2, label: t.objectives.AWARENESS.label }, // "Awareness" / "وعي" — shortened
+    { num: 3, label: t.admin.styleLabel }, // "Style" / "الأسلوب"
+    { num: 4, label: t.admin.keyMessage.split(" ")[0] }, // "Key" / "الرسالة"
+    { num: 5, label: t.admin.references }, // "References" / "المراجع"
+    { num: 6, label: t.briefing.summaryTarget }, // "Target" / "الموعد"
+    { num: 7, label: t.admin.payment }, // "Payment" / "الدفع"
+  ];
   const [step, setStep] = React.useState(0);
   const [state, setState] = React.useState<BriefState>(INITIAL);
   const [direction, setDirection] = React.useState<1 | -1>(1);
@@ -142,15 +155,15 @@ export function BriefingForm() {
       });
       const data = await res.json();
       if (!res.ok) {
-        toast.error(data?.error ?? "Could not submit brief");
+        toast.error(data?.error ?? t.briefing.toastError);
         setSubmitting(false);
         return;
       }
-      toast.success("Brief submitted. Our team will verify your payment within 24 hours.");
+      toast.success(t.briefing.toastSuccess);
       router.push("/dashboard");
       router.refresh();
     } catch {
-      toast.error("Network error. Please try again.");
+      toast.error(t.briefing.toastNetworkError);
       setSubmitting(false);
     }
   }
@@ -200,25 +213,25 @@ export function BriefingForm() {
             {/* ---------- STEP 1: BRAND & INDUSTRY ---------- */}
             {step === 0 && (
               <StepShell
-                num="01"
-                title="Brand & industry"
-                subtitle="Tell us who you are. This becomes the title of your order."
+                num={t.briefing.step1Num}
+                title={t.briefing.step1Title}
+                subtitle={t.briefing.step1Subtitle}
               >
                 <div className="grid sm:grid-cols-2 gap-5">
-                  <Field label="Brand name" required>
+                  <Field label={t.briefing.brandName} required>
                     <Input
                       autoFocus
                       value={state.brandName}
                       onChange={(e) => update("brandName", e.target.value)}
-                      placeholder="e.g. Castellano Atelier"
+                      placeholder={t.briefing.brandNamePlaceholder}
                       className="h-12 bg-white/[0.02] border-white/10 focus:border-white/30 focus-visible:ring-white/20 placeholder:text-white/25"
                     />
                   </Field>
-                  <Field label="Industry" required>
+                  <Field label={t.briefing.industry} required>
                     <Input
                       value={state.industry}
                       onChange={(e) => update("industry", e.target.value)}
-                      placeholder="e.g. Fashion / Luxury"
+                      placeholder={t.briefing.industryPlaceholder}
                       className="h-12 bg-white/[0.02] border-white/10 focus:border-white/30 focus-visible:ring-white/20 placeholder:text-white/25"
                     />
                   </Field>
@@ -229,9 +242,9 @@ export function BriefingForm() {
             {/* ---------- STEP 2: OBJECTIVE ---------- */}
             {step === 1 && (
               <StepShell
-                num="02"
-                title="What should this reel achieve?"
-                subtitle="Pick the single most important outcome. We shape the creative around it."
+                num={t.briefing.step2Num}
+                title={t.briefing.step2Title}
+                subtitle={t.briefing.step2Subtitle}
               >
                 <div className="grid sm:grid-cols-3 gap-3">
                   {BRIEF_OBJECTIVES.map((obj) => {
@@ -249,7 +262,7 @@ export function BriefingForm() {
                       >
                         <div className="flex items-center justify-between mb-2">
                           <span className="font-display text-lg font-medium tracking-tight">
-                            {obj.label}
+                            {t.objectives[obj.value as keyof typeof t.objectives].label}
                           </span>
                           <span
                             className={`h-4 w-4 rounded-full border transition-all duration-300 ${
@@ -268,7 +281,7 @@ export function BriefingForm() {
                           </span>
                         </div>
                         <p className="text-xs text-white/50 leading-relaxed">
-                          {obj.description}
+                          {t.objectives[obj.value as keyof typeof t.objectives].desc}
                         </p>
                       </button>
                     );
@@ -280,9 +293,9 @@ export function BriefingForm() {
             {/* ---------- STEP 3: STYLE ---------- */}
             {step === 2 && (
               <StepShell
-                num="03"
-                title="Pick a visual language."
-                subtitle="The look and feel. You can refine later — this sets the initial direction."
+                num={t.briefing.step3Num}
+                title={t.briefing.step3Title}
+                subtitle={t.briefing.step3Subtitle}
               >
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {BRIEF_STYLES.map((s) => {
@@ -300,7 +313,7 @@ export function BriefingForm() {
                       >
                         <div className="flex items-center justify-between mb-2">
                           <span className="font-display text-base font-medium tracking-tight">
-                            {s.label}
+                            {t.styles[s.value as keyof typeof t.styles].label}
                           </span>
                           <span
                             className={`h-4 w-4 rounded-full border transition-all duration-300 ${
@@ -317,7 +330,7 @@ export function BriefingForm() {
                           </span>
                         </div>
                         <p className="text-xs text-white/50 leading-relaxed">
-                          {s.description}
+                          {t.styles[s.value as keyof typeof t.styles].desc}
                         </p>
                       </button>
                     );
@@ -329,9 +342,9 @@ export function BriefingForm() {
             {/* ---------- STEP 4: AUDIENCE & MESSAGE ---------- */}
             {step === 3 && (
               <StepShell
-                num="04"
-                title="Audience & message"
-                subtitle="The two most important inputs. Be specific — vague briefs make vague reels."
+                num={t.briefing.step4Num}
+                title={t.briefing.step4Title}
+                subtitle={t.briefing.step4Subtitle}
               >
                 <div className="space-y-5">
                   <Field label="Target audience" required>
@@ -359,9 +372,9 @@ export function BriefingForm() {
             {/* ---------- STEP 5: REFERENCES ---------- */}
             {step === 4 && (
               <StepShell
-                num="05"
-                title="Reference links"
-                subtitle="Optional. Drop any reels, videos, or pages that capture the energy you want."
+                num={t.briefing.step5Num}
+                title={t.briefing.step5Title}
+                subtitle={t.briefing.step5Subtitle}
               >
                 <div className="space-y-3">
                   {state.referenceLinks.map((link, i) => (
@@ -423,9 +436,9 @@ export function BriefingForm() {
             {/* ---------- STEP 6: DEADLINE ---------- */}
             {step === 5 && (
               <StepShell
-                num="06"
-                title="When do you need it?"
-                subtitle="Pick a target delivery date. We'll confirm feasibility within 24 hours."
+                num={t.briefing.step6Num}
+                title={t.briefing.step6Title}
+                subtitle={t.briefing.step6Subtitle}
               >
                 <div className="grid md:grid-cols-2 gap-8">
                   {/* Calendar */}
@@ -509,9 +522,9 @@ export function BriefingForm() {
             {/* ---------- STEP 7: PAYMENT ---------- */}
             {step === 6 && (
               <StepShell
-                num="07"
-                title="Payment & receipt"
-                subtitle="Select your package, transfer the amount via InstaPay, and upload a screenshot of the receipt."
+                num={t.briefing.step7Num}
+                title={t.briefing.step7Title}
+                subtitle={t.briefing.step7Subtitle}
               >
                 <div className="space-y-6">
                   {/* Package selection */}
@@ -637,8 +650,8 @@ export function BriefingForm() {
           disabled={step === 0 || submitting}
           className="h-11 px-5 rounded-full text-white/60 hover:text-white hover:bg-white/[0.04] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
         >
-          <ArrowLeft className="h-4 w-4 mr-1.5" />
-          Back
+          <ArrowLeft className="h-4 w-4 mr-1.5 rtl-flip" />
+          {t.briefing.back}
         </Button>
 
         <div className="flex items-center gap-2">
@@ -652,8 +665,8 @@ export function BriefingForm() {
               disabled={!canAdvance}
               className="group h-11 px-6 rounded-full bg-white text-black hover:bg-white/90 transition-all duration-300 glow-white-soft disabled:opacity-30 disabled:cursor-not-allowed"
             >
-              Continue
-              <ArrowRight className="h-4 w-4 ml-1.5 transition-transform group-hover:translate-x-0.5" />
+              {t.briefing.continue}
+              <ArrowRight className="h-4 w-4 ml-1.5 transition-transform group-hover:translate-x-0.5 rtl-flip" />
             </Button>
           ) : (
             <Button
@@ -665,12 +678,12 @@ export function BriefingForm() {
               {submitting ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin mr-1.5" />
-                  Submitting…
+                  {t.briefing.submitting}
                 </>
               ) : (
                 <>
-                  Submit brief
-                  <ArrowRight className="h-4 w-4 ml-1.5 transition-transform group-hover:translate-x-0.5" />
+                  {t.briefing.submit}
+                  <ArrowRight className="h-4 w-4 ml-1.5 transition-transform group-hover:translate-x-0.5 rtl-flip" />
                 </>
               )}
             </Button>
@@ -696,10 +709,11 @@ function StepShell({
   subtitle: string;
   children: React.ReactNode;
 }) {
+  const { t } = useI18n();
   return (
     <div className="space-y-7">
       <div>
-        <p className="text-mono-label text-white/40 mb-3">Step {num}</p>
+        <p className="text-mono-label text-white/40 mb-3">{t.admin.step} {num}</p>
         <h2 className="text-display text-2xl md:text-3xl font-medium tracking-tight leading-[1.15]">
           {title}
         </h2>

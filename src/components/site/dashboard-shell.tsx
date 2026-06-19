@@ -7,6 +7,7 @@ import { signOut, useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LogOut, User, ChevronDown, Plus, ArrowLeft } from "lucide-react";
 import { Logo } from "@/components/site/logo";
+import { useI18n } from "@/lib/i18n";
 
 interface DashboardShellProps {
   children: React.ReactNode;
@@ -28,6 +29,7 @@ export function DashboardShell({
   primaryAction,
 }: DashboardShellProps) {
   const router = useRouter();
+  const { t } = useI18n();
   const { data: session } = useSession();
   const [menuOpen, setMenuOpen] = React.useState(false);
   const menuRef = React.useRef<HTMLDivElement>(null);
@@ -136,7 +138,7 @@ export function DashboardShell({
                       className="w-full mt-1 flex items-center gap-2.5 px-3 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/[0.04] rounded-lg transition-colors"
                     >
                       <LogOut className="h-4 w-4" />
-                      Sign out
+                      {t.shell.signOut}
                     </button>
                   </motion.div>
                 )}

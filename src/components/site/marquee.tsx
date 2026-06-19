@@ -1,16 +1,18 @@
 "use client";
 
-const ITEMS = [
-  "Ideation",
-  "AI Generation",
-  "Editing",
-  "Color Grading",
-  "Sound Design",
-  "Motion",
-  "Delivery",
-];
+import { useI18n } from "@/lib/i18n";
 
 export function Marquee() {
+  const { t } = useI18n();
+  const ITEMS = [
+    t.marquee.ideation,
+    t.marquee.aiGeneration,
+    t.marquee.editing,
+    t.marquee.colorGrading,
+    t.marquee.soundDesign,
+    t.marquee.motion,
+    t.marquee.delivery,
+  ];
   // Duplicate the list so the track can loop seamlessly via -50% transform
   const loop = [...ITEMS, ...ITEMS];
   return (

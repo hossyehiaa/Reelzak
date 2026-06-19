@@ -3,32 +3,34 @@
 import * as React from "react";
 import { motion } from "framer-motion";
 import { FileText, Wand2, Package } from "lucide-react";
-
-const STEPS = [
-  {
-    num: "01",
-    icon: FileText,
-    title: "Fill the Brief",
-    body: "Tell us about your brand, the objective, the style, the audience, the deadline. Two minutes — that's all we ask. The rest is on us.",
-    detail: "Brand · Objective · Style · Audience · Deadline",
-  },
-  {
-    num: "02",
-    icon: Wand2,
-    title: "Our Team Works",
-    body: "A creative director ideates. Our AI specialists generate. An editor assembles. A colorist grades. A sound designer scores. You don't see the messy middle — just the cut.",
-    detail: "Ideation · AI Generation · Editing · Grading · Sound",
-  },
-  {
-    num: "03",
-    icon: Package,
-    title: "Receive Your Reel",
-    body: "A finished, publish-ready vertical reel lands in your client portal. Download it. Schedule it. Ship it. Or request one revision round — included in every package.",
-    detail: "Review · Download · Publish",
-  },
-];
+import { useI18n } from "@/lib/i18n";
 
 export function HowItWorks() {
+  const { t } = useI18n();
+  const STEPS = [
+    {
+      num: t.howItWorks.step1Num,
+      icon: FileText,
+      title: t.howItWorks.step1Title,
+      body: t.howItWorks.step1Body,
+      detail: t.howItWorks.step1Detail,
+    },
+    {
+      num: t.howItWorks.step2Num,
+      icon: Wand2,
+      title: t.howItWorks.step2Title,
+      body: t.howItWorks.step2Body,
+      detail: t.howItWorks.step2Detail,
+    },
+    {
+      num: t.howItWorks.step3Num,
+      icon: Package,
+      title: t.howItWorks.step3Title,
+      body: t.howItWorks.step3Body,
+      detail: t.howItWorks.step3Detail,
+    },
+  ];
+
   return (
     <section id="process" className="relative py-32 md:py-40">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
@@ -42,19 +44,18 @@ export function HowItWorks() {
         >
           <div>
             <p className="text-mono-label text-white/40 mb-4">
-              (02) — Process
+              {t.howItWorks.label}
             </p>
             <h2 className="text-display text-4xl sm:text-5xl md:text-6xl leading-[1.05] tracking-tight font-medium">
-              Three steps.
+              {t.howItWorks.title1}
               <br />
               <span className="text-serif-italic text-white/55">
-                Zero friction.
+                {t.howItWorks.title2}
               </span>
             </h2>
           </div>
           <p className="max-w-sm text-base text-white/50 leading-relaxed">
-            From brief to delivered file in five business days. Monthly plans
-            ship in three. Studio tier ships in forty-eight hours.
+            {t.howItWorks.body}
           </p>
         </motion.div>
 
@@ -62,7 +63,7 @@ export function HowItWorks() {
         <div className="grid md:grid-cols-3 gap-px bg-white/[0.06] border border-white/[0.06] rounded-2xl overflow-hidden">
           {STEPS.map((step, i) => (
             <motion.div
-              key={step.num}
+              key={i}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}

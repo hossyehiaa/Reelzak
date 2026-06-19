@@ -3,9 +3,10 @@
 import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Minus } from "lucide-react";
-import { FAQ_ITEMS } from "@/lib/brand";
+import { useI18n } from "@/lib/i18n";
 
 export function FAQ() {
+  const { t } = useI18n();
   const [openIdx, setOpenIdx] = React.useState<number | null>(0);
 
   return (
@@ -20,26 +21,23 @@ export function FAQ() {
           className="mb-16 md:mb-20"
         >
           <p className="text-mono-label text-white/40 mb-4">
-            (04) — Questions
+            {t.faq.label}
           </p>
           <h2 className="text-display text-4xl sm:text-5xl md:text-6xl leading-[1.05] tracking-tight font-medium">
-            Before you ask,
+            {t.faq.title1}
             <br />
             <span className="text-serif-italic text-white/55">
-              we answer.
+              {t.faq.title2}
             </span>
           </h2>
         </motion.div>
 
         {/* Accordion */}
         <div className="border-t border-white/[0.08]">
-          {FAQ_ITEMS.map((item, i) => {
+          {t.faq.items.map((item, i) => {
             const isOpen = openIdx === i;
             return (
-              <div
-                key={i}
-                className="border-b border-white/[0.08]"
-              >
+              <div key={i} className="border-b border-white/[0.08]">
                 <button
                   onClick={() => setOpenIdx(isOpen ? null : i)}
                   className="w-full flex items-center justify-between gap-6 py-7 text-left group"

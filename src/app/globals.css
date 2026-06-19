@@ -294,3 +294,44 @@
   }
   .pulse-soft { animation: pulse-soft 2.4s ease-in-out infinite; }
 }
+
+/* ==========================================================================
+   RTL SUPPORT (Arabic)
+   When <html dir="rtl"> is set, these rules flip directional utilities.
+   Tailwind's `rtl:` variant handles most cases automatically, but a few
+   things need explicit rules for seamless mirroring.
+   ========================================================================== */
+[dir="rtl"] {
+  /* Slightly looser letter-spacing for Arabic — the script is already
+     visually dense, and the default -0.011em tightness can cramp it. */
+  letter-spacing: 0;
+}
+
+[dir="rtl"] body {
+  font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;
+}
+
+/* Flip the marquee direction in RTL */
+[dir="rtl"] .marquee-track {
+  animation-direction: reverse;
+}
+
+/* Ensure form inputs render text RTL correctly */
+[dir="rtl"] input,
+[dir="rtl"] textarea {
+  text-align: right;
+}
+
+/* Flip the gradient vignette direction for visual balance */
+[dir="rtl"] .cglab-bg {
+  background-image:
+    radial-gradient(ellipse 90% 60% at 50% -10%, oklch(1 0 0 / 0.06), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 0% 100%, oklch(1 0 0 / 0.03), transparent 60%);
+}
+
+/* In RTL, arrows that point right should point left (and vice versa).
+   We use a utility class `.rtl-flip` on directional icons. */
+[dir="rtl"] .rtl-flip {
+  transform: scaleX(-1);
+}
+

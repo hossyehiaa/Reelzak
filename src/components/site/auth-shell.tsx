@@ -4,6 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Logo } from "@/components/site/logo";
+import { useI18n } from "@/lib/i18n";
 
 /**
  * AuthShell — shared two-column layout for Login + Signup.
@@ -18,6 +19,7 @@ export function AuthShell({
   children: React.ReactNode;
   eyebrow: string;
 }) {
+  const { t } = useI18n();
   return (
     <main className="flex-1 grid lg:grid-cols-2 min-h-screen">
       {/* ============================================================
@@ -53,24 +55,22 @@ export function AuthShell({
             {eyebrow}
           </p>
           <h1 className="text-display text-5xl xl:text-6xl 2xl:text-7xl leading-[1.0] tracking-tightest font-medium max-w-xl">
-            The reel is
+            {t.auth.brandHeadline1}
             <br />
-            <span className="text-serif-italic text-white/70">everything.</span>
+            <span className="text-serif-italic text-white/70">{t.auth.brandHeadline2}</span>
           </h1>
           <p className="mt-8 max-w-md text-base text-white/50 leading-relaxed">
-            One brief. One team. One finished reel — conceived, generated, and
-            edited by humans who refuse to ship anything less than cinema.
+            {t.auth.brandBody}
           </p>
         </div>
 
         {/* Footer quote — bottom */}
         <div className="relative z-10 pt-12 border-t border-white/[0.06]">
           <p className="text-serif-italic text-xl text-white/60 leading-snug max-w-md">
-            "They turned our brand voice into a 30-second film. We've never
-            gotten this many DMs."
+            "{t.auth.brandQuote}"
           </p>
           <p className="mt-3 text-mono-label text-white/40">
-            — Castellano Atelier
+            {t.auth.brandQuoteAttr}
           </p>
         </div>
       </section>

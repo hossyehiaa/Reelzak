@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n";
 
 interface FieldErrors {
   name?: string;
@@ -20,6 +21,7 @@ interface FieldErrors {
 
 export default function SignupPage() {
   const router = useRouter();
+  const { t } = useI18n();
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -85,26 +87,25 @@ export default function SignupPage() {
         return;
       }
 
-      toast.success("Welcome to CGLAB.");
+      toast.success(t.dashboard.welcome);
       router.push("/dashboard");
       router.refresh();
     } catch (err) {
-      setFormError("Something went wrong. Please try again.");
+      setFormError(t.auth.errorGeneric);
       setLoading(false);
     }
   }
 
   return (
-    <AuthShell eyebrow="(New) — Create account">
+    <AuthShell eyebrow={t.auth.newEyebrow}>
       <div className="space-y-8">
         {/* Header */}
         <div>
           <h2 className="text-display text-3xl md:text-4xl font-medium tracking-tight">
-            Start your project.
+            {t.auth.signupTitle}
           </h2>
           <p className="mt-3 text-sm text-white/50 leading-relaxed">
-            Create your client portal account. Takes thirty seconds — then
-            you can submit your first brief.
+            {t.auth.signupBody}
           </p>
         </div>
 
@@ -112,7 +113,7 @@ export default function SignupPage() {
         <form onSubmit={onSubmit} className="space-y-5">
           <div className="space-y-2">
             <Label htmlFor="name" className="text-mono-label text-white/50">
-              Name
+              {t.auth.name}
             </Label>
             <Input
               id="name"
@@ -131,7 +132,7 @@ export default function SignupPage() {
 
           <div className="space-y-2">
             <Label htmlFor="email" className="text-mono-label text-white/50">
-              Email
+              {t.auth.email}
             </Label>
             <Input
               id="email"
@@ -159,7 +160,7 @@ export default function SignupPage() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="At least 8 characters"
+              placeholder={t.auth.passwordPlaceholder}
               className="h-12 bg-white/[0.02] border-white/10 focus:border-white/30 focus-visible:ring-white/20 placeholder:text-white/25 text-base"
             />
 
@@ -181,7 +182,7 @@ export default function SignupPage() {
                   ))}
                 </div>
                 <span className="text-[11px] text-white/45 w-16 text-right">
-                  {strengthLabel}
+                  {[t.auth.strengthWeak, t.auth.strengthFair, t.auth.strengthStrong, t.auth.strengthExcellent][strength - 1] || ""}
                 </span>
               </div>
             )}
@@ -204,13 +205,13 @@ export default function SignupPage() {
 
           {/* Terms */}
           <p className="text-xs text-white/40 leading-relaxed">
-            By creating an account you agree to our{" "}
+            {t.auth.termsBody}{" "}
             <Link href="#" className="underline underline-offset-2 hover:text-white/70">
-              Terms
+              {t.footer.terms}
             </Link>{" "}
-            and{" "}
+            {t.auth.and}{" "}
             <Link href="#" className="underline underline-offset-2 hover:text-white/70">
-              Privacy Policy
+              {t.footer.privacy}
             </Link>
             .
           </p>
@@ -224,12 +225,12 @@ export default function SignupPage() {
             {loading ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Creating account…
+                {t.auth.creating}
               </>
             ) : (
               <>
-                Create account
-                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+                {t.auth.createAccount}
+                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 rtl-flip" />
               </>
             )}
           </Button>
@@ -237,12 +238,12 @@ export default function SignupPage() {
 
         {/* Footer */}
         <p className="text-center text-sm text-white/50">
-          Already have an account?{" "}
+          {t.auth.haveAccount}{" "}
           <Link
             href="/login"
             className="text-white underline underline-offset-4 hover:text-white"
           >
-            Sign in
+            {t.auth.signIn}
           </Link>
           .
         </p>

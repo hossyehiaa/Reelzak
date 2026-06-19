@@ -4,9 +4,11 @@ import * as React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Play, ArrowUpRight } from "lucide-react";
-import { BRAND } from "@/lib/brand";
+import { useI18n } from "@/lib/i18n";
 
 export function Hero() {
+  const { t } = useI18n();
+
   return (
     <section className="relative pt-36 md:pt-44 pb-20 md:pb-28 overflow-hidden">
       {/* Top label row */}
@@ -23,11 +25,11 @@ export function Hero() {
               <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
             </span>
             <span className="text-mono-label text-white/50">
-              Now accepting · Q3 2026
+              {t.hero.badge}
             </span>
           </div>
           <span className="hidden md:block text-mono-label text-white/40">
-            v.01 / Index
+            {t.hero.indexLabel}
           </span>
         </motion.div>
 
@@ -39,11 +41,14 @@ export function Hero() {
             transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
             className="text-display text-[2.75rem] sm:text-7xl md:text-8xl lg:text-[8.5rem] leading-[0.95] tracking-tightest font-medium"
           >
-            AI-generated
+            {t.hero.headline1}
             <br />
-            reels, <span className="text-serif-italic text-white/85 font-normal">crafted</span>
+            {t.hero.headline2}{" "}
+            <span className="text-serif-italic text-white/85 font-normal">
+              {t.hero.headline2Accent}
+            </span>
             <br />
-            by humans.
+            {t.hero.headline3}
           </motion.h1>
 
           <motion.p
@@ -52,9 +57,7 @@ export function Hero() {
             transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
             className="mt-10 max-w-xl text-lg md:text-xl text-white/55 leading-relaxed"
           >
-            {BRAND.description} Submit a brief — receive a finished reel.
-            No templates. No noise. Just cinema-grade short-form content,
-            made for your brand.
+            {t.hero.body}
           </motion.p>
 
           {/* CTAs */}
@@ -68,8 +71,8 @@ export function Hero() {
               href="/signup"
               className="group relative inline-flex items-center justify-center gap-2 px-7 py-4 text-base font-medium rounded-full bg-white text-black hover:bg-white/90 transition-all duration-300 glow-white-soft"
             >
-              Start Your Project
-              <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              {t.hero.ctaPrimary}
+              <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 rtl-flip" />
             </Link>
             <Link
               href="#showreel"
@@ -78,7 +81,7 @@ export function Hero() {
               <span className="flex h-7 w-7 items-center justify-center rounded-full border border-white/20 group-hover:border-white/40 transition-colors">
                 <Play className="h-3 w-3 fill-current" />
               </span>
-              View the Showreel
+              {t.hero.ctaSecondary}
             </Link>
           </motion.div>
         </div>
@@ -114,22 +117,22 @@ export function Hero() {
               <Play className="h-7 w-7 md:h-8 md:w-8 fill-white text-white translate-x-0.5" />
             </button>
             <div className="mt-6 text-center">
-              <p className="text-mono-label text-white/60">CGLAB · Showreel 2026</p>
+              <p className="text-mono-label text-white/60">{t.hero.showreelLabel}</p>
               <p className="mt-2 text-sm text-white/40">
-                90 seconds of selected work
+                {t.hero.showreelDuration}
               </p>
             </div>
           </div>
 
           {/* Corner labels */}
           <div className="absolute top-5 left-5 text-mono-label text-white/40">
-            REC ● 4K · 24FPS
+            {t.hero.recLabel}
           </div>
           <div className="absolute top-5 right-5 text-mono-label text-white/40">
-            00:00 / 01:30
+            {t.hero.timecode}
           </div>
           <div className="absolute bottom-5 left-5 text-mono-label text-white/40">
-            DIR · CGLAB STUDIO
+            {t.hero.directorLabel}
           </div>
           <div className="absolute bottom-5 right-5 text-mono-label text-white/40">
             ⌐◼ ◼¬
@@ -144,13 +147,13 @@ export function Hero() {
           className="mt-16 md:mt-24 grid grid-cols-2 md:grid-cols-4 gap-px bg-white/[0.06] rounded-xl overflow-hidden border border-white/[0.06]"
         >
           {[
-            { stat: "480+", label: "Reels delivered" },
-            { stat: "120+", label: "Brands served" },
-            { stat: "14d", label: "Avg turnaround" },
-            { stat: "98%", label: "Repeat clients" },
+            { stat: "480+", label: t.hero.statReels },
+            { stat: "120+", label: t.hero.statBrands },
+            { stat: "14d", label: t.hero.statTurnaround },
+            { stat: "98%", label: t.hero.statRepeat },
           ].map((item, i) => (
             <div
-              key={item.label}
+              key={i}
               className="bg-background p-6 md:p-8 flex flex-col gap-2"
             >
               <span className="text-display text-4xl md:text-5xl font-medium tracking-tight text-white">

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { ORDER_STATUS_META, type Order, type OrderStatus } from "@/types/domain";
+import { useI18n } from "@/lib/i18n";
 import { format, parseISO, isValid } from "date-fns";
 
 interface OrdersTableProps {
@@ -34,6 +35,7 @@ function daysUntil(d: string | Date | null): string {
 }
 
 export function OrdersTable({ orders, showClient = false }: OrdersTableProps) {
+  const { t } = useI18n();
   return (
     <div className="rounded-2xl border border-white/[0.06] overflow-hidden">
       <div className="overflow-x-auto scrollbar-cglab">
@@ -42,21 +44,21 @@ export function OrdersTable({ orders, showClient = false }: OrdersTableProps) {
           <thead>
             <tr className="border-b border-white/[0.06] bg-white/[0.015]">
               <th className="text-left text-mono-label text-white/45 font-medium py-4 px-6">
-                Order
+                {t.ordersTable.order}
               </th>
               <th className="text-left text-mono-label text-white/45 font-medium py-4 px-6">
-                Brand
+                {t.ordersTable.brand}
               </th>
               {showClient && (
                 <th className="text-left text-mono-label text-white/45 font-medium py-4 px-6">
-                  Client
+                  {t.admin.client}
                 </th>
               )}
               <th className="text-left text-mono-label text-white/45 font-medium py-4 px-6">
-                Status
+                {t.ordersTable.status}
               </th>
               <th className="text-left text-mono-label text-white/45 font-medium py-4 px-6">
-                Deadline
+                {t.ordersTable.deadline}
               </th>
               <th className="text-right text-mono-label text-white/45 font-medium py-4 px-6">
                 <span className="sr-only">Open</span>
@@ -114,7 +116,7 @@ export function OrdersTable({ orders, showClient = false }: OrdersTableProps) {
                       className={`inline-flex items-center gap-2 px-2.5 py-1 rounded-full border text-xs ${meta.color}`}
                     >
                       <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} />
-                      {meta.label}
+                      {t.status[order.status as OrderStatus].label}
                     </span>
                   </td>
                   {/* Deadline */}

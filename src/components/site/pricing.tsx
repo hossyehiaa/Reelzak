@@ -5,8 +5,18 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Check, ArrowUpRight } from "lucide-react";
 import { PRICING_PACKAGES } from "@/lib/brand";
+import { useI18n } from "@/lib/i18n";
 
 export function Pricing() {
+  const { t } = useI18n();
+
+  // Map package slugs to translation keys
+  const pkgTranslations: Record<string, { name: string; tagline: string; cta: string; features: string[] }> = {
+    single: t.pricing.packages.single,
+    "monthly-4": t.pricing.packages.monthly4,
+    "monthly-10": t.pricing.packages.monthly10,
+  };
+
   return (
     <section id="pricing" className="relative py-32 md:py-40">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
@@ -19,18 +29,17 @@ export function Pricing() {
           className="text-center mb-16 md:mb-24"
         >
           <p className="text-mono-label text-white/40 mb-4">
-            (03) — Pricing
+            {t.pricing.label}
           </p>
           <h2 className="text-display text-4xl sm:text-5xl md:text-6xl leading-[1.05] tracking-tight font-medium">
-            Pick a pace.
+            {t.pricing.title1}
             <br />
             <span className="text-serif-italic text-white/55">
-              We handle the rest.
+              {t.pricing.title2}
             </span>
           </h2>
           <p className="mt-6 max-w-xl mx-auto text-base text-white/50 leading-relaxed">
-            Month-to-month. Cancel anytime. Every plan includes ideation, AI
-            generation, editing, and at least one revision round.
+            {t.pricing.body}
           </p>
         </motion.div>
 
@@ -38,6 +47,7 @@ export function Pricing() {
         <div className="grid md:grid-cols-3 gap-5">
           {PRICING_PACKAGES.map((pkg, i) => {
             const popular = pkg.popular;
+            const trans = pkgTranslations[pkg.slug];
             return (
               <motion.div
                 key={pkg.slug}
@@ -54,21 +64,21 @@ export function Pricing() {
                 {/* Popular ribbon */}
                 {popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-white text-black text-mono-label">
-                    Most chosen
+                    {t.pricing.popular}
                   </div>
                 )}
 
                 {/* Header */}
                 <div className="flex items-baseline justify-between mb-2">
                   <h3 className="font-display text-xl font-medium tracking-tight">
-                    {pkg.name}
+                    {trans.name}
                   </h3>
                   <span className="text-mono-label text-white/40">
-                    {pkg.reelCount} {pkg.reelCount === 1 ? "reel" : "reels"}
+                    {pkg.reelCount} {pkg.reelCount === 1 ? t.common.reel : t.common.reels}
                   </span>
                 </div>
                 <p className="text-sm text-white/50 mb-8 min-h-[2.5em] leading-relaxed">
-                  {pkg.tagline}
+                  {trans.tagline}
                 </p>
 
                 {/* Price — EGP primary, USD secondary */}
@@ -77,20 +87,20 @@ export function Pricing() {
                     {pkg.priceEgp.toLocaleString("en-US")}
                   </span>
                   <span className="text-sm text-white/55 font-medium">
-                    EGP
+                    {t.common.EGP}
                   </span>
                   <span className="text-sm text-white/45">
-                    /{pkg.cadence === "monthly" ? "mo" : "once"}
+                    /{pkg.cadence === "monthly" ? t.pricing.perMonth : t.pricing.perOnce}
                   </span>
                 </div>
                 <p className="text-xs text-white/40 mb-1">
-                  ≈ ${pkg.priceUsd.toFixed(2)} USD ·{" "}
+                  ≈ ${pkg.priceUsd.toFixed(2)} {t.common.USD} ·{" "}
                   {pkg.cadence === "monthly"
-                    ? "billed monthly · cancel anytime"
-                    : "one-time delivery · 5-day turnaround"}
+                    ? t.pricing.billedMonthly
+                    : t.pricing.oneTime}
                 </p>
                 <p className="text-[11px] text-white/35 mb-8">
-                  Payment via InstaPay after brief submission
+                  {t.pricing.paymentNote}
                 </p>
 
                 {/* CTA */}
@@ -102,8 +112,8 @@ export function Pricing() {
                       : "border border-white/15 text-white hover:border-white/35 hover:bg-white/[0.04]"
                   }`}
                 >
-                  {pkg.cta}
-                  <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  {trans.cta}
+                  <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 rtl-flip" />
                 </Link>
 
                 {/* Divider */}
@@ -111,9 +121,9 @@ export function Pricing() {
 
                 {/* Features */}
                 <ul className="space-y-3.5">
-                  {pkg.features.map((f) => (
+                  {trans.features.map((f, fi) => (
                     <li
-                      key={f}
+                      key={fi}
                       className="flex items-start gap-3 text-sm text-white/70"
                     >
                       <span className="mt-0.5 flex h-4 w-4 items-center justify-center rounded-full border border-white/20 shrink-0">
@@ -136,12 +146,12 @@ export function Pricing() {
           transition={{ duration: 0.7, delay: 0.4 }}
           className="mt-10 text-center text-xs text-white/40"
         >
-          Need a higher volume or custom cadence?{" "}
+          {t.pricing.needCustom}{" "}
           <Link
             href="mailto:hello@cglab.studio"
             className="text-white/70 underline underline-offset-4 hover:text-white"
           >
-            Talk to us
+            {t.pricing.talkToUs}
           </Link>
           .
         </motion.p>
