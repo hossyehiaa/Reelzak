@@ -14,12 +14,14 @@ function isAdmin(user: { role: string } | null): boolean {
 const VALID_STATUSES = new Set<OrderStatus>(ORDER_STATUS_FLOW);
 
 // ---------------------------------------------------------------------------
-// PATCH /api/orders/[id] — update an order's status (and optionally attach a
-// delivery link). Admin-only.
+// PATCH /api/orders/[id] — update an order's status, delivery link, and/or
+// payment verification. Admin-only.
 //
 // deliveryFileUrl accepts:
 //   - a valid http(s) URL (Google Drive, Dropbox, WeTransfer, S3, etc.)
 //   - an empty string "" (to clear the existing link)
+//
+// paymentStatus accepts: "VERIFIED" | "REJECTED" (admin verification flow)
 // ---------------------------------------------------------------------------
 const PatchSchema = z.object({
   status: z
@@ -40,6 +42,8 @@ const PatchSchema = z.object({
     )
     .optional(),
   deliveryFileName: z.string().max(255).optional(),
+  // Payment verification (Task 3)
+  paymentStatus: z.enum(["VERIFIED", "REJECTED"]).optional(),
   note: z.string().max(1000).optional(),
 });
 
@@ -73,11 +77,12 @@ export async function PATCH(
     );
   }
 
-  const { status, deliveryFileUrl, deliveryFileName, note } = parsed.data;
+  const { status, deliveryFileUrl, deliveryFileName, paymentStatus, note } = parsed.data;
 
   // Validate the status transition is allowed (must move forward in the flow,
   // OR stay the same — we don't allow backward moves to keep the audit trail
-  // honest).
+  // honest). Exception: the revision flow lets admin move from READY_FOR_REVIEW
+  // back to EDITING (Task 4 — implemented separately).
   if (status && !VALID_STATUSES.has(status)) {
     return NextResponse.json({ error: "Invalid status" }, { status: 400 });
   }
@@ -104,6 +109,14 @@ export async function PATCH(
     );
   }
 
+  // Payment verification (Task 3)
+  if (paymentStatus && !existing.paymentReceiptUrl) {
+    return NextResponse.json(
+      { error: "Cannot verify payment — no receipt uploaded." },
+      { status: 400 },
+    );
+  }
+
   // Build the update payload
   const update: Record<string, unknown> = {};
   if (status) update.status = status;
@@ -113,6 +126,17 @@ export async function PATCH(
   }
   if (deliveryFileName !== undefined) {
     update.deliveryFileName = deliveryFileName || null;
+  }
+  if (paymentStatus) {
+    update.paymentStatus = paymentStatus;
+    if (paymentStatus === "VERIFIED") {
+      update.paymentVerifiedAt = new Date();
+      update.paymentVerifiedById = user!.id;
+    } else {
+      // On reject, clear the verifier
+      update.paymentVerifiedAt = null;
+      update.paymentVerifiedById = null;
+    }
   }
 
   const updated = await db.order.update({

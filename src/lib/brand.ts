@@ -9,6 +9,9 @@ export const BRAND = {
   description:
     "A productized AI media agency. You submit a brief. Our team handles ideation, AI generation, and editing. You receive a finished reel.",
   email: "hello@cglab.studio",
+  // InstaPay handle for manual payment (Task 3). Replace with your actual handle.
+  instapayHandle: "@cglab.studio",
+  instapayName: "CGLAB Studio",
   social: {
     twitter: "https://twitter.com/cglab",
     instagram: "https://instagram.com/cglab",

@@ -33,6 +33,7 @@ model User {
 
   orders    Order[]
   statusUpdates OrderStatusUpdate[]
+  verifiedPayments Order[] @relation("PaymentVerifier")
 
   @@index([email])
 }
@@ -57,6 +58,13 @@ model Order {
   deadline        DateTime?
   deliveryFileUrl String?        // populated by admin when status -> DELIVERED
   deliveryFileName String?
+  // --- Payment (Task 3) ---
+  paymentPackage  String?        // "single" | "monthly-4" | "monthly-10"
+  paymentReceiptUrl String?      // base64 data URL of the uploaded receipt screenshot
+  paymentStatus   PaymentStatus  @default(PENDING)
+  paymentVerifiedAt DateTime?
+  paymentVerifiedById String?
+  paymentVerifiedBy User?        @relation("PaymentVerifier", fields: [paymentVerifiedById], references: [id])
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 
@@ -65,6 +73,7 @@ model Order {
   @@index([clientId])
   @@index([status])
   @@index([deadline])
+  @@index([paymentStatus])
 }
 
 enum OrderStatus {
@@ -74,6 +83,12 @@ enum OrderStatus {
   EDITING          // assembling the final reel
   READY_FOR_REVIEW // first cut sent to client for review
   DELIVERED        // final file attached, order closed
+}
+
+enum PaymentStatus {
+  PENDING   // receipt uploaded, awaiting admin verification
+  VERIFIED  // admin confirmed the payment
+  REJECTED  // admin rejected the receipt (wrong amount, unclear, etc.)
 }
 
 // ---------------------------------------------------------------------------

@@ -16,6 +16,11 @@ import bcrypt from "bcryptjs";
 
 const db = new PrismaClient();
 
+// Tiny placeholder receipt image (1×1 black JPEG, ~600 bytes base64).
+// In production these would be real screenshots uploaded by clients.
+const PLACEHOLDER_RECEIPT =
+  "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAj/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AKgAB//Z";
+
 async function main() {
   console.log("→ Seeding CGLAB database…\n");
 
@@ -79,6 +84,11 @@ async function main() {
         }),
         status: "EDITING",
         deadline: inDays(3),
+        // Payment verified (this order is already in production)
+        paymentPackage: "monthly-4",
+        paymentReceiptUrl: PLACEHOLDER_RECEIPT,
+        paymentStatus: "VERIFIED",
+        paymentVerifiedAt: inDays(-5),
       },
       {
         orderNumber: "CGL-2026-0002",
@@ -94,6 +104,10 @@ async function main() {
         }),
         status: "IDEATION",
         deadline: inDays(8),
+        // Payment pending — admin needs to verify this one
+        paymentPackage: "monthly-4",
+        paymentReceiptUrl: PLACEHOLDER_RECEIPT,
+        paymentStatus: "PENDING",
       },
       {
         orderNumber: "CGL-2026-0003",
@@ -113,6 +127,11 @@ async function main() {
         deliveryFileUrl:
           "https://drive.google.com/file/d/1aBcDeFgHiJkLmNoPqRsTuVwXyZ/view",
         deliveryFileName: "CGL-2026-0003-castellano-process-reel.mp4",
+        // Payment verified (delivered order)
+        paymentPackage: "single",
+        paymentReceiptUrl: PLACEHOLDER_RECEIPT,
+        paymentStatus: "VERIFIED",
+        paymentVerifiedAt: inDays(-10),
       },
     ];
 

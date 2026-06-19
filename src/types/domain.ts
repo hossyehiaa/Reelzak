@@ -13,6 +13,8 @@ export type OrderStatus =
   | "READY_FOR_REVIEW"
   | "DELIVERED";
 
+export type PaymentStatus = "PENDING" | "VERIFIED" | "REJECTED";
+
 export interface User {
   id: string;
   name: string | null;
@@ -43,6 +45,11 @@ export interface Order {
   deadline: string | null;
   deliveryFileUrl?: string | null;
   deliveryFileName?: string | null;
+  // Payment fields (Task 3)
+  paymentPackage?: string | null;
+  paymentReceiptUrl?: string | null;
+  paymentStatus: PaymentStatus;
+  paymentVerifiedAt?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -114,3 +121,27 @@ export const ORDER_STATUS_FLOW: OrderStatus[] = [
   "READY_FOR_REVIEW",
   "DELIVERED",
 ];
+
+export const PAYMENT_STATUS_META: Record<
+  PaymentStatus,
+  { label: string; color: string; dot: string; description: string }
+> = {
+  PENDING: {
+    label: "Pending",
+    color: "bg-white/5 text-white/70 border-white/10",
+    dot: "bg-white/40",
+    description: "Receipt uploaded — awaiting admin verification.",
+  },
+  VERIFIED: {
+    label: "Verified",
+    color: "bg-white text-black border-white",
+    dot: "bg-black",
+    description: "Payment confirmed by admin.",
+  },
+  REJECTED: {
+    label: "Rejected",
+    color: "bg-white/[0.03] text-white/50 border-white/10 line-through",
+    dot: "bg-white/20",
+    description: "Receipt rejected — client needs to re-upload.",
+  },
+};

@@ -54,6 +54,11 @@ export default async function AdminDashboardPage() {
     deadline: o.deadline ? o.deadline.toISOString() : null,
     deliveryFileUrl: o.deliveryFileUrl ?? null,
     deliveryFileName: o.deliveryFileName ?? null,
+    // Payment fields (Task 3)
+    paymentPackage: o.paymentPackage ?? null,
+    paymentReceiptUrl: o.paymentReceiptUrl ?? null,
+    paymentStatus: o.paymentStatus,
+    paymentVerifiedAt: o.paymentVerifiedAt ? o.paymentVerifiedAt.toISOString() : null,
     createdAt: o.createdAt.toISOString(),
     updatedAt: o.updatedAt.toISOString(),
     client: {

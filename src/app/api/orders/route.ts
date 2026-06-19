@@ -30,6 +30,9 @@ export async function GET() {
 
 // ---------------------------------------------------------------------------
 // POST /api/orders — submit a new brief (client only).
+// Now accepts payment fields (Task 3): paymentPackage + paymentReceiptUrl.
+// The receipt is a base64 data URL (client-side compressed image) so we don't
+// need external storage for MVP.
 // ---------------------------------------------------------------------------
 const BriefSchema = z.object({
   brandName: z.string().min(2, "Brand name is required").max(100),
@@ -45,6 +48,16 @@ const BriefSchema = z.object({
     .transform((arr) => (arr ?? []).filter(Boolean)),
   additionalNotes: z.string().max(2000).optional().default(""),
   deadline: z.string().datetime().optional(),
+  // --- Payment fields (Task 3) ---
+  paymentPackage: z.enum(["single", "monthly-4", "monthly-10"]),
+  paymentReceiptUrl: z
+    .string()
+    .min(1, "Payment receipt is required")
+    .max(500_000, "Receipt image too large (max ~350KB after compression)")
+    .refine(
+      (v) => v.startsWith("data:image/") || v.startsWith("https://"),
+      "Receipt must be an image data URL or https URL",
+    ),
 });
 
 export async function POST(req: Request) {
@@ -75,7 +88,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const { brandName, industry, objective, style, targetAudience, keyMessage, referenceLinks, additionalNotes, deadline } = parsed.data;
+  const { brandName, industry, objective, style, targetAudience, keyMessage, referenceLinks, additionalNotes, deadline, paymentPackage, paymentReceiptUrl } = parsed.data;
 
   const briefDetails = JSON.stringify({
     objective,
@@ -97,6 +110,10 @@ export async function POST(req: Request) {
       briefDetails,
       status: "PENDING",
       deadline: deadline ? new Date(deadline) : null,
+      // Payment (Task 3)
+      paymentPackage,
+      paymentReceiptUrl,
+      paymentStatus: "PENDING",
     },
     select: {
       id: true,
@@ -104,6 +121,7 @@ export async function POST(req: Request) {
       brandName: true,
       status: true,
       deadline: true,
+      paymentStatus: true,
       createdAt: true,
     },
   });

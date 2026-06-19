@@ -27,8 +27,11 @@ import { Button } from "@/components/ui/button";
 import {
   ORDER_STATUS_FLOW,
   ORDER_STATUS_META,
+  PAYMENT_STATUS_META,
   type OrderStatus,
+  type PaymentStatus,
 } from "@/types/domain";
+import { PRICING_PACKAGES } from "@/lib/brand";
 import { format, parseISO, isValid } from "date-fns";
 
 interface AdminOrder {
@@ -41,6 +44,11 @@ interface AdminOrder {
   deadline: string | null;
   deliveryFileUrl: string | null;
   deliveryFileName: string | null;
+  // Payment fields (Task 3)
+  paymentPackage: string | null;
+  paymentReceiptUrl: string | null;
+  paymentStatus: PaymentStatus;
+  paymentVerifiedAt: string | null;
   createdAt: string;
   updatedAt: string;
   client: {
@@ -316,6 +324,11 @@ export function OrderDetailDrawer({
               />
             </div>
           </section>
+
+          {/* ---------- PAYMENT (Task 3) ---------- */}
+          {order.paymentReceiptUrl && (
+            <PaymentSection order={order} onMutated={onMutated} />
+          )}
 
           {/* ---------- DELIVERY FILE ---------- */}
           <section className="p-6">
@@ -602,5 +615,178 @@ function DriveLinkInput({
         )}
       </Button>
     </div>
+  );
+}
+
+// ===========================================================================
+// PaymentSection — admin view of the client's payment receipt + verify/reject
+// ===========================================================================
+function PaymentSection({
+  order,
+  onMutated,
+}: {
+  order: AdminOrder;
+  onMutated: () => void;
+}) {
+  const [updating, setUpdating] = React.useState<"VERIFIED" | "REJECTED" | null>(null);
+  const meta = PAYMENT_STATUS_META[order.paymentStatus];
+  const pkg = PRICING_PACKAGES.find((p) => p.slug === order.paymentPackage);
+
+  async function updatePaymentStatus(target: "VERIFIED" | "REJECTED") {
+    setUpdating(target);
+    try {
+      const res = await fetch(`/api/orders/${order.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ paymentStatus: target }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data?.error ?? "Could not update payment status");
+        return;
+      }
+      toast.success(
+        target === "VERIFIED"
+          ? "Payment verified. Order is now confirmed."
+          : "Payment rejected. Client will need to re-upload.",
+      );
+      onMutated();
+    } catch {
+      toast.error("Network error");
+    } finally {
+      setUpdating(null);
+    }
+  }
+
+  return (
+    <section className="p-6 border-b border-white/[0.06]">
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-mono-label text-white/40">Payment</p>
+        <span
+          className={`inline-flex items-center gap-2 px-2.5 py-1 rounded-full border text-xs ${meta.color}`}
+        >
+          <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} />
+          {meta.label}
+        </span>
+      </div>
+
+      {/* Package + amount summary */}
+      {pkg && (
+        <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 mb-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-mono-label text-white/45 mb-1">Package</p>
+              <p className="font-display text-base font-medium tracking-tight">
+                {pkg.name}
+              </p>
+              <p className="text-xs text-white/45 mt-0.5">
+                {pkg.reelCount} {pkg.reelCount === 1 ? "reel" : "reels"} · {pkg.cadence === "monthly" ? "monthly" : "one-time"}
+              </p>
+            </div>
+            <div className="text-right">
+              <p className="text-display text-2xl font-medium tracking-tight">
+                {pkg.priceEgp.toLocaleString("en-US")}
+                <span className="text-sm text-white/55 ml-1">EGP</span>
+              </p>
+              <p className="text-[11px] text-white/40 mt-0.5">
+                ≈ ${pkg.priceUsd.toFixed(2)} USD
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Receipt preview */}
+      <div className="rounded-xl border border-white/[0.08] bg-black/40 overflow-hidden mb-4">
+        <div className="flex items-center justify-between p-3 border-b border-white/[0.06]">
+          <p className="text-xs text-white/55">Receipt screenshot</p>
+          <a
+            href={order.paymentReceiptUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs text-white/70 hover:text-white transition-colors"
+          >
+            <ExternalLink className="h-3 w-3" />
+            Open full size
+          </a>
+        </div>
+        <a
+          href={order.paymentReceiptUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block relative aspect-[16/10] bg-black group"
+        >
+          <img
+            src={order.paymentReceiptUrl}
+            alt="Payment receipt"
+            className="absolute inset-0 w-full h-full object-contain"
+          />
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
+            <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-xs text-white/90 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15">
+              Click to view full size
+            </span>
+          </div>
+        </a>
+      </div>
+
+      {/* Verification timestamp (if verified) */}
+      {order.paymentStatus === "VERIFIED" && order.paymentVerifiedAt && (
+        <p className="text-xs text-white/45 mb-3">
+          Verified on {fmtDate(order.paymentVerifiedAt)}
+        </p>
+      )}
+
+      {/* Verify / Reject buttons — only show if PENDING */}
+      {order.paymentStatus === "PENDING" && (
+        <div className="flex items-center gap-3">
+          <Button
+            onClick={() => updatePaymentStatus("VERIFIED")}
+            disabled={updating !== null}
+            className="group flex-1 h-10 rounded-full bg-white text-black hover:bg-white/90 transition-all duration-300 glow-white-soft disabled:opacity-60"
+          >
+            {updating === "VERIFIED" ? (
+              <>
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                Verifying…
+              </>
+            ) : (
+              <>
+                <Check className="h-3.5 w-3.5" />
+                Verify payment
+              </>
+            )}
+          </Button>
+          <Button
+            onClick={() => updatePaymentStatus("REJECTED")}
+            disabled={updating !== null}
+            variant="outline"
+            className="flex-1 h-10 rounded-full border-white/15 text-white/70 hover:text-white hover:border-white/30 hover:bg-white/[0.04] transition-all duration-300 disabled:opacity-60"
+          >
+            {updating === "REJECTED" ? (
+              <>
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                Rejecting…
+              </>
+            ) : (
+              <>
+                <X className="h-3.5 w-3.5" />
+                Reject
+              </>
+            )}
+          </Button>
+        </div>
+      )}
+
+      {/* Re-verify option if already decided */}
+      {order.paymentStatus !== "PENDING" && (
+        <button
+          onClick={() => updatePaymentStatus(order.paymentStatus === "VERIFIED" ? "REJECTED" : "VERIFIED")}
+          disabled={updating !== null}
+          className="text-xs text-white/50 hover:text-white transition-colors disabled:opacity-50"
+        >
+          {updating ? "Updating…" : `Mark as ${order.paymentStatus === "VERIFIED" ? "Rejected" : "Verified"} instead`}
+        </button>
+      )}
+    </section>
   );
 }

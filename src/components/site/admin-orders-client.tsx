@@ -4,7 +4,13 @@ import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, X, ArrowUpRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { ORDER_STATUS_FLOW, ORDER_STATUS_META, type OrderStatus } from "@/types/domain";
+import {
+  ORDER_STATUS_FLOW,
+  ORDER_STATUS_META,
+  PAYMENT_STATUS_META,
+  type OrderStatus,
+  type PaymentStatus,
+} from "@/types/domain";
 import { OrderDetailDrawer } from "./order-detail-drawer";
 import { format, parseISO, isValid } from "date-fns";
 
@@ -18,6 +24,11 @@ interface AdminOrder {
   deadline: string | null;
   deliveryFileUrl: string | null;
   deliveryFileName: string | null;
+  // Payment fields (Task 3)
+  paymentPackage: string | null;
+  paymentReceiptUrl: string | null;
+  paymentStatus: PaymentStatus;
+  paymentVerifiedAt: string | null;
   createdAt: string;
   updatedAt: string;
   client: {
@@ -190,12 +201,24 @@ export function AdminOrdersClient({ orders }: AdminOrdersClientProps) {
                         </p>
                       </td>
                       <td className="py-4 px-6">
-                        <span
-                          className={`inline-flex items-center gap-2 px-2.5 py-1 rounded-full border text-xs ${meta.color}`}
-                        >
-                          <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} />
-                          {meta.label}
-                        </span>
+                        <div className="flex flex-col gap-1.5">
+                          <span
+                            className={`inline-flex items-center gap-2 px-2.5 py-1 rounded-full border text-xs ${meta.color} w-fit`}
+                          >
+                            <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} />
+                            {meta.label}
+                          </span>
+                          {/* Payment indicator (Task 3) */}
+                          {order.paymentStatus && (
+                            <span
+                              className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[10px] w-fit ${PAYMENT_STATUS_META[order.paymentStatus].color}`}
+                              title={PAYMENT_STATUS_META[order.paymentStatus].description}
+                            >
+                              <span className={`h-1 w-1 rounded-full ${PAYMENT_STATUS_META[order.paymentStatus].dot}`} />
+                              Pay · {PAYMENT_STATUS_META[order.paymentStatus].label}
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td className="py-4 px-6">
                         <span className="text-sm text-white/80">

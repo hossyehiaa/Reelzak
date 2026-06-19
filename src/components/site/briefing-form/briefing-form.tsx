@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, ArrowLeft, Loader2, Calendar as CalIcon, Plus, X, Link2 } from "lucide-react";
+import { ArrowRight, ArrowLeft, Loader2, Calendar as CalIcon, Plus, X, Link2, UploadCloud, ImageIcon, Check } from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +13,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { StepIndicator } from "./step-indicator";
 import { BRIEF_OBJECTIVES, BRIEF_STYLES } from "@/lib/orders";
+import { PRICING_PACKAGES, BRAND } from "@/lib/brand";
 import { format } from "date-fns";
 
 // ---------------------------------------------------------------------------
@@ -28,6 +29,10 @@ interface BriefState {
   referenceLinks: string[];
   additionalNotes: string;
   deadline: Date | undefined;
+  // Payment (Task 3)
+  paymentPackage: "" | "single" | "monthly-4" | "monthly-10";
+  paymentReceiptUrl: string; // base64 data URL
+  paymentReceiptName: string;
 }
 
 const INITIAL: BriefState = {
@@ -40,6 +45,9 @@ const INITIAL: BriefState = {
   referenceLinks: [],
   additionalNotes: "",
   deadline: undefined,
+  paymentPackage: "",
+  paymentReceiptUrl: "",
+  paymentReceiptName: "",
 };
 
 const STEPS = [
@@ -49,6 +57,7 @@ const STEPS = [
   { num: 4, label: "Message" },
   { num: 5, label: "References" },
   { num: 6, label: "Schedule" },
+  { num: 7, label: "Payment" },
 ];
 
 // ---------------------------------------------------------------------------
@@ -70,6 +79,9 @@ function stepValid(step: number, s: BriefState): boolean {
       return true; // optional
     case 5:
       return true; // deadline optional
+    case 6:
+      // Payment step — must select a package AND upload a receipt
+      return s.paymentPackage !== "" && s.paymentReceiptUrl.startsWith("data:image/");
     default:
       return false;
   }
@@ -115,8 +127,17 @@ export function BriefingForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...state,
+          brandName: state.brandName,
+          industry: state.industry,
+          objective: state.objective,
+          style: state.style,
+          targetAudience: state.targetAudience,
+          keyMessage: state.keyMessage,
+          referenceLinks: state.referenceLinks,
+          additionalNotes: state.additionalNotes,
           deadline: state.deadline?.toISOString(),
+          paymentPackage: state.paymentPackage,
+          paymentReceiptUrl: state.paymentReceiptUrl,
         }),
       });
       const data = await res.json();
@@ -125,7 +146,7 @@ export function BriefingForm() {
         setSubmitting(false);
         return;
       }
-      toast.success("Brief submitted. Our team will be in touch within 24 hours.");
+      toast.success("Brief submitted. Our team will verify your payment within 24 hours.");
       router.push("/dashboard");
       router.refresh();
     } catch {
@@ -484,6 +505,125 @@ export function BriefingForm() {
                 </div>
               </StepShell>
             )}
+
+            {/* ---------- STEP 7: PAYMENT ---------- */}
+            {step === 6 && (
+              <StepShell
+                num="07"
+                title="Payment & receipt"
+                subtitle="Select your package, transfer the amount via InstaPay, and upload a screenshot of the receipt."
+              >
+                <div className="space-y-6">
+                  {/* Package selection */}
+                  <div>
+                    <p className="text-mono-label text-white/45 mb-3">
+                      Select package
+                    </p>
+                    <div className="grid sm:grid-cols-3 gap-3">
+                      {PRICING_PACKAGES.map((pkg) => {
+                        const active = state.paymentPackage === pkg.slug;
+                        return (
+                          <button
+                            key={pkg.slug}
+                            type="button"
+                            onClick={() => update("paymentPackage", pkg.slug as BriefState["paymentPackage"])}
+                            className={`text-left rounded-xl p-4 border transition-all duration-300 relative ${
+                              active
+                                ? "border-white/40 bg-white/[0.06]"
+                                : "border-white/10 bg-white/[0.015] hover:border-white/25 hover:bg-white/[0.03]"
+                            }`}
+                          >
+                            {pkg.popular && (
+                              <span className="absolute -top-2.5 left-3 px-2 py-0.5 rounded-full bg-white text-black text-[9px] tracking-wider uppercase font-medium">
+                                Popular
+                              </span>
+                            )}
+                            <div className="flex items-center justify-between mb-1.5">
+                              <span className="font-display text-sm font-medium tracking-tight">
+                                {pkg.name}
+                              </span>
+                              <span
+                                className={`h-3.5 w-3.5 rounded-full border transition-all duration-300 ${
+                                  active ? "bg-white border-white" : "border-white/25"
+                                }`}
+                              >
+                                {active && (
+                                  <motion.span
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    className="block h-full w-full rounded-full bg-black scale-[0.4]"
+                                  />
+                                )}
+                              </span>
+                            </div>
+                            <p className="text-display text-xl font-medium tracking-tight">
+                              {pkg.priceEgp.toLocaleString("en-US")}
+                              <span className="text-xs text-white/55 ml-1">EGP</span>
+                            </p>
+                            <p className="text-[10px] text-white/40 mt-0.5">
+                              ≈ ${pkg.priceUsd.toFixed(2)} · {pkg.reelCount} {pkg.reelCount === 1 ? "reel" : "reels"}
+                            </p>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* InstaPay instructions */}
+                  <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-5 space-y-3">
+                    <p className="text-mono-label text-white/45">
+                      Payment instructions
+                    </p>
+                    <ol className="space-y-2.5 text-sm text-white/70 leading-relaxed">
+                      <li className="flex gap-3">
+                        <span className="font-mono text-white/40 shrink-0">01.</span>
+                        <span>
+                          Open <span className="text-white/90 font-medium">InstaPay</span> and send{" "}
+                          <span className="text-white font-medium">
+                            {state.paymentPackage
+                              ? `${PRICING_PACKAGES.find((p) => p.slug === state.paymentPackage)?.priceEgp.toLocaleString("en-US")} EGP`
+                              : "the package amount"}
+                          </span>{" "}
+                          to:
+                        </span>
+                      </li>
+                      <li className="flex gap-3 pl-6">
+                        <div className="flex-1 rounded-lg border border-white/10 bg-black/30 px-4 py-3 font-mono text-base text-white tracking-wide">
+                          {BRAND.instapayHandle}
+                        </div>
+                      </li>
+                      <li className="flex gap-3">
+                        <span className="font-mono text-white/40 shrink-0">02.</span>
+                        <span>Recipient name: <span className="text-white/90">{BRAND.instapayName}</span></span>
+                      </li>
+                      <li className="flex gap-3">
+                        <span className="font-mono text-white/40 shrink-0">03.</span>
+                        <span>Take a screenshot of the confirmation page (with the transaction ID and date visible).</span>
+                      </li>
+                      <li className="flex gap-3">
+                        <span className="font-mono text-white/40 shrink-0">04.</span>
+                        <span>Upload the screenshot below. Our team verifies payments within 24 hours.</span>
+                      </li>
+                    </ol>
+                  </div>
+
+                  {/* Receipt dropzone */}
+                  <div>
+                    <p className="text-mono-label text-white/45 mb-3">
+                      Upload receipt
+                    </p>
+                    <ReceiptDropzone
+                      value={state.paymentReceiptUrl}
+                      fileName={state.paymentReceiptName}
+                      onChange={(url, name) => {
+                        update("paymentReceiptUrl", url);
+                        update("paymentReceiptName", name);
+                      }}
+                    />
+                  </div>
+                </div>
+              </StepShell>
+            )}
           </motion.div>
         </AnimatePresence>
       </div>
@@ -610,5 +750,242 @@ function Row({ k, v }: { k: string; v: string }) {
       <span className="text-white/45">{k}</span>
       <span className="text-white/85 text-right truncate max-w-[60%]">{v}</span>
     </div>
+  );
+}
+
+// ===========================================================================
+// ReceiptDropzone — premium monochromatic drag-and-drop image uploader
+// ===========================================================================
+// Compresses the image client-side to ~150KB max (800px wide, JPEG q80) and
+// returns a base64 data URL. No external storage needed — the data URL gets
+// stored directly in the Order.paymentReceiptUrl column.
+// ===========================================================================
+function ReceiptDropzone({
+  value,
+  fileName,
+  onChange,
+}: {
+  value: string;
+  fileName: string;
+  onChange: (dataUrl: string, fileName: string) => void;
+}) {
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const [dragging, setDragging] = React.useState(false);
+  const [processing, setProcessing] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+
+  // -----------------------------------------------------------------------
+  // Image compression: load the file into an <img>, draw onto a canvas at
+  // max 800px wide, export as JPEG q80. Returns a data URL.
+  // -----------------------------------------------------------------------
+  async function processFile(file: File): Promise<{ dataUrl: string; name: string }> {
+    if (!file.type.startsWith("image/")) {
+      throw new Error("Please upload an image file (PNG, JPG, or screenshot).");
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      throw new Error("Image too large. Max 10MB before compression.");
+    }
+
+    const dataUrl = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = () => reject(new Error("Could not read file."));
+      reader.readAsDataURL(file);
+    });
+
+    // Load into an Image to compress
+    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const i = new Image();
+      i.onload = () => resolve(i);
+      i.onerror = () => reject(new Error("Could not load image."));
+      i.src = dataUrl;
+    });
+
+    // Scale to max 800px wide, preserve aspect ratio
+    const MAX_W = 800;
+    const scale = Math.min(1, MAX_W / img.width);
+    const w = Math.round(img.width * scale);
+    const h = Math.round(img.height * scale);
+
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Could not get canvas context.");
+    ctx.drawImage(img, 0, 0, w, h);
+
+    // Export as JPEG q80 (handles screenshots well, ~100-200KB)
+    const compressed = canvas.toDataURL("image/jpeg", 0.8);
+    return { dataUrl: compressed, name: file.name };
+  }
+
+  async function handleFile(file: File) {
+    setError(null);
+    setProcessing(true);
+    try {
+      const { dataUrl, name } = await processFile(file);
+      onChange(dataUrl, name);
+    } catch (err: any) {
+      setError(err?.message ?? "Could not process image.");
+    } finally {
+      setProcessing(false);
+    }
+  }
+
+  function onDrop(e: React.DragEvent) {
+    e.preventDefault();
+    setDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) handleFile(file);
+  }
+
+  function onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file) handleFile(file);
+    e.target.value = "";
+  }
+
+  // If a receipt is already uploaded, show the preview
+  if (value && !processing) {
+    return (
+      <div className="space-y-3">
+        <div className="relative rounded-xl border border-white/[0.12] bg-white/[0.02] overflow-hidden">
+          <div className="flex items-center gap-3 p-3 border-b border-white/[0.06]">
+            <div className="h-9 w-9 shrink-0 rounded-lg bg-white/[0.06] border border-white/10 flex items-center justify-center">
+              <Check className="h-4 w-4 text-white/80" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm text-white/90 truncate">
+                {fileName || "receipt.jpg"}
+              </p>
+              <p className="text-[11px] text-white/40">
+                Receipt attached · click to view full size
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => onChange("", "")}
+              className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/10 text-xs text-white/60 hover:text-white hover:border-white/30 transition-all duration-300"
+            >
+              <X className="h-3 w-3" />
+              Remove
+            </button>
+          </div>
+          {/* Thumbnail preview */}
+          <a
+            href={value}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block relative aspect-[16/9] bg-black/40 group"
+          >
+            {/* Receipt preview */}
+            <img
+              src={value}
+              alt="Payment receipt preview"
+              className="absolute inset-0 w-full h-full object-contain"
+            />
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
+              <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-xs text-white/90 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15">
+                Click to view full size
+              </span>
+            </div>
+          </a>
+        </div>
+        <button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          className="text-xs text-white/50 hover:text-white transition-colors"
+        >
+          Replace with a different image
+        </button>
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/*"
+          onChange={onInputChange}
+          className="hidden"
+        />
+      </div>
+    );
+  }
+
+  // Dropzone state (empty or processing)
+  return (
+    <>
+      <div
+        onDragOver={(e) => {
+          e.preventDefault();
+          if (!processing) setDragging(true);
+        }}
+        onDragLeave={() => setDragging(false)}
+        onDrop={onDrop}
+        onClick={() => !processing && inputRef.current?.click()}
+        className={`relative rounded-xl border-2 border-dashed p-8 text-center transition-all duration-300 cursor-pointer overflow-hidden ${
+          dragging
+            ? "border-white/50 bg-white/[0.06] scale-[1.01]"
+            : "border-white/[0.12] bg-white/[0.015] hover:border-white/30 hover:bg-white/[0.03]"
+        } ${processing ? "pointer-events-none" : ""}`}
+      >
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/*"
+          onChange={onInputChange}
+          className="hidden"
+        />
+
+        {processing ? (
+          <div className="flex flex-col items-center gap-3 py-2">
+            <Loader2 className="h-6 w-6 animate-spin text-white/70" />
+            <p className="text-sm text-white/60">Processing image…</p>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-3">
+            <motion.div
+              animate={dragging ? { y: -4, scale: 1.1 } : { y: 0, scale: 1 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="h-11 w-11 rounded-full border border-white/20 bg-white/[0.03] flex items-center justify-center"
+            >
+              <UploadCloud className="h-5 w-5 text-white/70" />
+            </motion.div>
+            <div>
+              <p className="text-sm font-medium text-white/85">
+                {dragging ? "Drop to upload" : "Drop receipt screenshot here"}
+              </p>
+              <p className="text-xs text-white/45 mt-1">
+                or click to browse · PNG, JPG · auto-compressed
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Decorative grid while dragging */}
+        <AnimatePresence>
+          {dragging && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="pointer-events-none absolute inset-0"
+              style={{
+                backgroundImage:
+                  "linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px)",
+                backgroundSize: "24px 24px",
+              }}
+            />
+          )}
+        </AnimatePresence>
+      </div>
+
+      {error && (
+        <motion.p
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-xs text-white/70"
+        >
+          {error}
+        </motion.p>
+      )}
+    </>
   );
 }
