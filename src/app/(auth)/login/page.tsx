@@ -86,35 +86,6 @@ function LoginForm() {
           </p>
         </div>
 
-        {/* Demo creds hint */}
-        <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4">
-          <p className="text-mono-label text-white/40 mb-2">{t.auth.demoAccounts}</p>
-          <div className="grid grid-cols-1 gap-2 text-xs text-white/60 font-mono">
-            <button
-              type="button"
-              onClick={() => {
-                setEmail("client@cglab.studio");
-                setPassword("cglab-client-2026");
-              }}
-              className="text-left p-2 rounded-md hover:bg-white/[0.04] transition-colors"
-            >
-              <span className="text-white/40">client →</span>{" "}
-              client@cglab.studio / cglab-client-2026
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setEmail("admin@cglab.studio");
-                setPassword("cglab-admin-2026");
-              }}
-              className="text-left p-2 rounded-md hover:bg-white/[0.04] transition-colors"
-            >
-              <span className="text-white/40">admin  →</span>{" "}
-              admin@cglab.studio / cglab-admin-2026
-            </button>
-          </div>
-        </div>
-
         {/* Form */}
         <form onSubmit={onSubmit} className="space-y-5">
           <div className="space-y-2">

@@ -224,7 +224,6 @@ export const en = {
     // Login
     loginTitle: "Welcome back.",
     loginBody: "Sign in to your client portal to submit briefs, track orders, and download finished reels.",
-    demoAccounts: "Demo accounts",
     email: "Email",
     password: "Password",
     forgot: "Forgot?",

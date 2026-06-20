@@ -228,7 +228,6 @@ export const ar: Dictionary = {
     brandQuoteAttr: "— Castellano Atelier",
     loginTitle: "مرحبًا بعودتك.",
     loginBody: "سجّل الدخول إلى بوابة العميل لتقديم الملخصات، تتبع الطلبات، وتحميل الريلز الجاهزة.",
-    demoAccounts: "حسابات تجريبية",
     email: "البريد الإلكتروني",
     password: "كلمة المرور",
     forgot: "نسيت؟",
