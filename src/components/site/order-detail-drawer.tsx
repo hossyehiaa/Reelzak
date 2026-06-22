@@ -33,6 +33,7 @@ import {
   type PaymentStatus,
 } from "@/types/domain";
 import { PRICING_PACKAGES } from "@/lib/brand";
+import { useI18n } from "@/lib/i18n";
 import { format, parseISO, isValid } from "date-fns";
 
 interface AdminOrder {
@@ -96,6 +97,7 @@ export function OrderDetailDrawer({
   onClose,
   onMutated,
 }: OrderDetailDrawerProps) {
+  const { t } = useI18n();
   const brief = parseBrief(order.briefDetails);
   const [updatingStatus, setUpdatingStatus] = React.useState<OrderStatus | null>(null);
 
