@@ -12,6 +12,7 @@ import {
   type PaymentStatus,
 } from "@/types/domain";
 import { OrderDetailDrawer } from "./order-detail-drawer";
+import { useI18n } from "@/lib/i18n";
 import { format, parseISO, isValid } from "date-fns";
 
 interface AdminOrder {
@@ -57,6 +58,7 @@ function fmtDate(d: string | null) {
 }
 
 export function AdminOrdersClient({ orders }: AdminOrdersClientProps) {
+  const { t } = useI18n();
   const [filter, setFilter] = React.useState<FilterValue>("ALL");
   const [query, setQuery] = React.useState("");
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
@@ -220,6 +222,16 @@ export function AdminOrdersClient({ orders }: AdminOrdersClientProps) {
                             >
                               <span className={`h-1 w-1 rounded-full ${PAYMENT_STATUS_META[order.paymentStatus].dot}`} />
                               Pay · {PAYMENT_STATUS_META[order.paymentStatus].label}
+                            </span>
+                          )}
+                          {/* Green delivery indicator — shows when a delivery link is attached */}
+                          {order.deliveryFileUrl && (
+                            <span
+                              className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[10px] w-fit bg-green-500/15 border-green-500/40 text-green-400 font-semibold"
+                              title="Delivery link attached"
+                            >
+                              <span className="h-1 w-1 rounded-full bg-green-400" />
+                              ✓ {t.admin.deliveryDone}
                             </span>
                           )}
                         </div>

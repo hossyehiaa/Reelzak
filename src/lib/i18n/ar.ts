@@ -445,6 +445,9 @@ export const ar: Dictionary = {
     updateLink: "تحديث الرابط",
     saving: "جاري الحفظ…",
     orderDelivered: "تم تسليم الطلب. لا شيء متبقٍ.",
+    // Green delivery confirmation badge
+    deliveryDone: "تم التسليم",
+    deliveryDoneFull: "تم إرفاق التسليم",
     payment: "الدفع",
     package: "الباقة",
     receiptScreenshot: "لقطة الإيصال",

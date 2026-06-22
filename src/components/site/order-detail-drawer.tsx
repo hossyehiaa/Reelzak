@@ -342,30 +342,46 @@ export function OrderDetailDrawer({
 
           {/* ---------- DELIVERY FILE ---------- */}
           <section className="p-6">
-            <p className="text-mono-label text-white/40 mb-4">Delivery file</p>
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-mono-label text-white/40">{t.admin.deliveryFile}</p>
+              {order.deliveryFileUrl && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/15 border border-green-500/40 text-green-400 text-xs font-semibold tracking-wide">
+                  <span className="h-1.5 w-1.5 rounded-full bg-green-400" />
+                  {t.admin.deliveryDone}
+                </span>
+              )}
+            </div>
             {order.deliveryFileUrl ? (
               <div className="space-y-3">
-                <div className="flex items-center gap-3 p-4 rounded-xl border border-white/[0.08] bg-white/[0.02]">
-                  <div className="h-10 w-10 shrink-0 rounded-lg bg-white/[0.06] border border-white/10 flex items-center justify-center">
-                    <FileVideo className="h-5 w-5 text-white/70" />
+                {/* Green confirmation banner */}
+                <div className="flex items-center gap-3 p-4 rounded-xl border border-green-500/30 bg-green-500/[0.08]">
+                  <div className="h-10 w-10 shrink-0 rounded-full bg-green-500/20 border border-green-500/40 flex items-center justify-center">
+                    <Check className="h-5 w-5 text-green-400" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-white/90 truncate">
-                      {order.deliveryFileName ?? "Final reel"}
+                    <p className="text-sm font-semibold text-green-400">
+                      {t.admin.deliveryDone}
                     </p>
-                    <p className="text-xs text-white/40 truncate">
-                      {order.deliveryFileUrl}
+                    <p className="text-xs text-green-300/60 mt-0.5">
+                      {order.deliveryFileName ?? "Final reel"}
                     </p>
                   </div>
                   <a
                     href={order.deliveryFileUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-white text-black text-xs font-medium hover:bg-white/90 transition-all duration-300"
+                    className="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-green-500 text-black text-xs font-medium hover:bg-green-400 transition-all duration-300"
                   >
                     <Download className="h-3.5 w-3.5" />
                     Open
                   </a>
+                </div>
+                {/* The link details (compact) */}
+                <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-white/[0.06] bg-white/[0.01]">
+                  <Link2 className="h-3 w-3 text-white/30 shrink-0" />
+                  <p className="text-xs text-white/35 truncate flex-1">
+                    {order.deliveryFileUrl}
+                  </p>
                 </div>
                 <DriveLinkInput
                   orderId={order.id}

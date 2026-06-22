@@ -447,6 +447,9 @@ export const en = {
     updateLink: "Update link",
     saving: "Saving…",
     orderDelivered: "Order delivered. Nothing left to do.",
+    // Green delivery confirmation badge
+    deliveryDone: "Done",
+    deliveryDoneFull: "Delivery attached",
     // Payment section
     payment: "Payment",
     package: "Package",
